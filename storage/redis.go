@@ -9,7 +9,7 @@ import (
 
 	"gopkg.in/redis.v3"
 
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 type Config struct {
@@ -330,7 +330,7 @@ func (r *RedisClient) GetPayees() ([]string, error) {
 			break
 		}
 	}
-	for login, _ := range payees {
+	for login := range payees {
 		result = append(result, login)
 	}
 	return result, nil

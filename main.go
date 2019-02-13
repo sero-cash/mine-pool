@@ -13,10 +13,10 @@ import (
 
 	"github.com/yvasiyarov/gorelic"
 
-	"github.com/sero-cash/open-sero-pool/api"
-	"github.com/sero-cash/open-sero-pool/payouts"
-	"github.com/sero-cash/open-sero-pool/proxy"
-	"github.com/sero-cash/open-sero-pool/storage"
+	"github.com/sero-cash/mine-pool/api"
+	"github.com/sero-cash/mine-pool/payouts"
+	"github.com/sero-cash/mine-pool/proxy"
+	"github.com/sero-cash/mine-pool/storage"
 )
 
 var cfg proxy.Config

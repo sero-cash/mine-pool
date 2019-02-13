@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/sero-cash/go-sero/common"
-	"github.com/sero-cash/open-sero-pool/ethash"
+	"github.com/sero-cash/mine-pool/ethash"
 )
 
 var hasher = ethash.New()

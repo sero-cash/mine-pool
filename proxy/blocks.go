@@ -9,8 +9,8 @@ import (
 
 	"github.com/sero-cash/go-sero/common"
 
-	"github.com/sero-cash/open-sero-pool/rpc"
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/rpc"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 const maxBacklog = 3

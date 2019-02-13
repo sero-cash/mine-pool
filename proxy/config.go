@@ -1,10 +1,10 @@
 package proxy
 
 import (
-	"github.com/sero-cash/open-sero-pool/api"
-	"github.com/sero-cash/open-sero-pool/payouts"
-	"github.com/sero-cash/open-sero-pool/policy"
-	"github.com/sero-cash/open-sero-pool/storage"
+	"github.com/sero-cash/mine-pool/api"
+	"github.com/sero-cash/mine-pool/payouts"
+	"github.com/sero-cash/mine-pool/policy"
+	"github.com/sero-cash/mine-pool/storage"
 )
 
 type Config struct {

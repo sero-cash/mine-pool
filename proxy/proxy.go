@@ -13,10 +13,10 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/sero-cash/open-sero-pool/policy"
-	"github.com/sero-cash/open-sero-pool/rpc"
-	"github.com/sero-cash/open-sero-pool/storage"
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/policy"
+	"github.com/sero-cash/mine-pool/rpc"
+	"github.com/sero-cash/mine-pool/storage"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 type ProxyServer struct {

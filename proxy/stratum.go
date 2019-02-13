@@ -9,7 +9,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 const (

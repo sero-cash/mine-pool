@@ -14,7 +14,7 @@ import (
 
 	"github.com/sero-cash/go-sero/common"
 
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 type RPCClient struct {

@@ -12,8 +12,8 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/sero-cash/open-sero-pool/storage"
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/storage"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 type ApiConfig struct {

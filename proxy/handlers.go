@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/sero-cash/open-sero-pool/rpc"
-	"github.com/sero-cash/open-sero-pool/util"
+	"github.com/sero-cash/mine-pool/rpc"
+	"github.com/sero-cash/mine-pool/util"
 )
 
 // Allow only lowercase hexadecimal with 0x prefix
