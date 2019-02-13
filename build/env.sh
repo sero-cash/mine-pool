@@ -11,10 +11,24 @@ fi
 workspace="$PWD/build/_workspace"
 root="$PWD"
 serodir="$workspace/src/github.com/sero-cash"
-if [ ! -L "$serodir/open-sero-pool" ]; then
+if [ ! -L "$serodir/mine-pool" ]; then
     mkdir -p "$serodir"
     cd "$serodir"
-    ln -s ../../../../../. open-sero-pool
+    ln -s ../../../../../. mine-pool
+    cd "$root"
+fi
+
+if [ ! -L "$serodir/go-sero" ]; then
+    mkdir -p "$serodir"
+    cd "$serodir"
+    ln -s ../../../../../../go-sero go-sero
+    cd "$root"
+fi
+
+if [ ! -L "$serodir/go-czero-import" ]; then
+    mkdir -p "$serodir"
+    cd "$serodir"
+    ln -s ../../../../../../go-czero-import go-czero-import
     cd "$root"
 fi
 
@@ -25,8 +39,8 @@ GOBIN="$PWD/build/bin"
 export GOPATH GOBIN
 
 # Run the command inside the workspace.
-cd "$serodir/open-sero-pool"
-PWD="$serodir/open-sero-pool"
+cd "$serodir/mine-pool"
+PWD="$serodir/mine-pool"
 
 # Launch the arguments with the configured environment.
 exec "$@"
