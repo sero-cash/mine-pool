@@ -1,0 +1,67 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "yGnECJsPZBlk5khJmLUP8thNNxM=",
+			"path": "github.com/gorilla/mux",
+			"revision": "a7962380ca08b5a188038c69871b8d3fbdf31e89",
+			"revisionTime": "2019-01-25T16:05:53Z"
+		},
+		{
+			"checksumSHA1": "suL7yZNBxN847Lmrt2bMIIwtJ4g=",
+			"path": "github.com/yvasiyarov/go-metrics",
+			"revision": "c25f46c4b94079672242ec48a545e7ca9ebe3aec",
+			"revisionTime": "2015-01-12T13:29:44Z"
+		},
+		{
+			"checksumSHA1": "1VhTgADT1kTDVl1t3Tmzsj++jHI=",
+			"path": "github.com/yvasiyarov/gorelic",
+			"revision": "635ca6035f2355e29fc558effa613d0d5867aac8",
+			"revisionTime": "2018-08-09T11:26:00Z"
+		},
+		{
+			"checksumSHA1": "/9VouHqPf0ad+TcMGqhPssfoLb0=",
+			"path": "github.com/yvasiyarov/newrelic_platform_go",
+			"revision": "9c099fbc30e90de5bb5c5f94aa5fd08f2daeaacd",
+			"revisionTime": "2016-06-01T14:19:57Z"
+		},
+		{
+			"checksumSHA1": "+4r0PnLwwyhO5/jvU5R/TEJb4kA=",
+			"path": "gopkg.in/bsm/ratelimit.v1",
+			"revision": "db14e161995a5177acef654cb0dd785e8ee8bc22",
+			"revisionTime": "2016-02-20T15:49:07Z"
+		},
+		{
+			"checksumSHA1": "/EL/UuzIPObHgESjkBMaD4gaXOw=",
+			"path": "gopkg.in/redis.v3",
+			"revision": "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29",
+			"revisionTime": "2016-06-27T09:56:34Z"
+		},
+		{
+			"checksumSHA1": "b4Z72l8sq4xuWhR+nM5vbLQIv+o=",
+			"path": "gopkg.in/redis.v3/internal",
+			"revision": "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29",
+			"revisionTime": "2016-06-27T09:56:34Z"
+		},
+		{
+			"checksumSHA1": "tNI/mAuqqQqfYU4vuJghUroIts4=",
+			"path": "gopkg.in/redis.v3/internal/consistenthash",
+			"revision": "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29",
+			"revisionTime": "2016-06-27T09:56:34Z"
+		},
+		{
+			"checksumSHA1": "JvqkSear94dc+NgofRqBAUmLcN0=",
+			"path": "gopkg.in/redis.v3/internal/hashtag",
+			"revision": "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29",
+			"revisionTime": "2016-06-27T09:56:34Z"
+		},
+		{
+			"checksumSHA1": "ROpD4/McQLnnxpPenjA0mEZfTL8=",
+			"path": "gopkg.in/redis.v3/internal/pool",
+			"revision": "b5e368500d0a508ef8f16e9c2d4025a8a46bcc29",
+			"revisionTime": "2016-06-27T09:56:34Z"
+		}
+	],
+	"rootPath": "github.com/sero-cash/open-sero-pool"
+}
