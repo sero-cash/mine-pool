@@ -228,12 +228,12 @@ func (u *PayoutsProcessor) process() {
 }
 
 func (self PayoutsProcessor) isUnlockedAccount() bool {
-	_, err := self.rpc.Sign(self.config.Address, "0x0")
+	reply, err := self.rpc.AddressUnlocked(self.config.Address)
 	if err != nil {
 		log.Println("Unable to process payouts:", err)
 		return false
 	}
-	return true
+	return reply
 }
 
 func (self PayoutsProcessor) checkPeers() bool {

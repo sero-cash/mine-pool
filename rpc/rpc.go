@@ -2,7 +2,6 @@ package rpc
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,8 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-
-	"github.com/sero-cash/go-sero/common"
 
 	"github.com/sero-cash/mine-pool/util"
 )
@@ -175,19 +172,15 @@ func (r *RPCClient) GetBalance(address string) (*big.Int, error) {
 	return util.String2Big(reply), err
 }
 
-func (r *RPCClient) Sign(from string, s string) (string, error) {
-	hash := sha256.Sum256([]byte(s))
-	rpcResp, err := r.doPost(r.Url, "sero_sign", []string{from, common.ToHex(hash[:])})
-	var reply string
+func (r *RPCClient) AddressUnlocked(from string) (bool, error) {
+	rpcResp, err := r.doPost(r.Url, "sero_addressUnlocked", []string{from})
+	var reply bool
 	if err != nil {
-		return reply, err
+		return false, err
 	}
 	err = json.Unmarshal(*rpcResp.Result, &reply)
 	if err != nil {
-		return reply, err
-	}
-	if util.IsZeroHash(reply) {
-		err = errors.New("Can't sign message, perhaps account is locked")
+		return false, err
 	}
 	return reply, err
 }
