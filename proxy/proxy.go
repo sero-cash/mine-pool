@@ -54,6 +54,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 
 	proxy := &ProxyServer{config: cfg, backend: backend, policy: policy}
 	proxy.diff = util.GetTargetHex(cfg.Proxy.Difficulty)
+	log.Printf("proxy .dff %s", proxy.diff)
 
 	proxy.upstreams = make([]*rpc.RPCClient, len(cfg.Upstream))
 	for i, v := range cfg.Upstream {
@@ -126,8 +127,8 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 func (s *ProxyServer) Start() {
 	log.Printf("Starting proxy on %v", s.config.Proxy.Listen)
 	r := mux.NewRouter()
-	r.Handle("/{login:0x[0-9a-fA-F]{40}}/{id:[0-9a-zA-Z-_]{1,8}}", s)
-	r.Handle("/{login:0x[0-9a-fA-F]{40}}", s)
+	r.Handle("/{login}/{id:[0-9a-zA-Z-_]{1,8}}", s)
+	r.Handle("/{login}", s)
 	srv := &http.Server{
 		Addr:           s.config.Proxy.Listen,
 		Handler:        r,
@@ -218,7 +219,7 @@ func (cs *Session) handleMessage(s *ProxyServer, r *http.Request, req *JSONRpcRe
 	vars := mux.Vars(r)
 	login := strings.ToLower(vars["login"])
 
-	if !util.IsValidHexAddress(login) {
+	if !util.IsValidBase58Address(login) {
 		errReply := &ErrorReply{Code: -1, Message: "Invalid login"}
 		cs.sendError(req.Id, errReply)
 		return

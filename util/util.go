@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"math/big"
 	"regexp"
 	"strconv"
@@ -16,8 +17,8 @@ var Shannon = math.BigPow(10, 9)
 var pow256 = math.BigPow(2, 256)
 var zeroHash = regexp.MustCompile("^0?x?0+$")
 
-func IsValidHexAddress(s string) bool {
-	return common.IsBase58Address(s)
+func IsValidBase58Address(s string) bool {
+	return common.IsBase58Account(s)
 }
 
 func IsZeroHash(s string) bool {
@@ -30,8 +31,17 @@ func MakeTimestamp() int64 {
 
 func GetTargetHex(diff int64) string {
 	difficulty := big.NewInt(diff)
+
+	n := big.NewInt(1)
+	n.Lsh(n, 255)
+	n.Div(n, difficulty)
+	n.Lsh(n, 1)
+	diff2 := n
+
 	diff1 := new(big.Int).Div(pow256, difficulty)
-	return string(common.ToHex(diff1.Bytes()))
+	fmt.Println(diff2)
+	fmt.Println(diff1)
+	return string(common.BytesToHash(diff1.Bytes()).Hex())
 }
 
 func TargetHexToDiff(targetHex string) *big.Int {
