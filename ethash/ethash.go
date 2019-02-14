@@ -103,8 +103,8 @@ func freeCache(cache *cache) {
 	cache.ptr = nil
 }
 
-func (cache *cache) compute(dagSize uint64, hash common.Hash, nonce uint64) (ok bool, mixDigest, result common.Hash) {
-	ret := C.ethash_light_compute_internal(cache.ptr, C.uint64_t(dagSize), hashToH256(hash), C.uint64_t(nonce))
+func (cache *cache) compute(dagSize uint64, hash common.Hash, nonce uint64, height uint64) (ok bool, mixDigest, result common.Hash) {
+	ret := C.ethash_light_compute_internal(cache.ptr, C.uint64_t(dagSize), hashToH256(hash), C.uint64_t(nonce), C.uint64_t(height))
 	// Make sure cache is live until after the C call.
 	// This is important because a GC might happen and execute
 	// the finalizer before the call completes.
@@ -151,7 +151,7 @@ func (l *Light) Verify(block Block) bool {
 		dagSize = dagSizeForTesting
 	}
 	// Recompute the hash using the cache.
-	ok, mixDigest, result := cache.compute(uint64(dagSize), block.HashNoNonce(), block.Nonce())
+	ok, mixDigest, result := cache.compute(uint64(dagSize), block.HashNoNonce(), block.Nonce(), blockNum)
 	if !ok {
 		return false
 	}
@@ -364,7 +364,7 @@ func (pow *Full) Search(block Block, stop <-chan struct{}, index int) (nonce uin
 				atomic.AddInt32(&pow.hashRate, hashrateDiff)
 			}
 
-			ret := C.ethash_full_compute(dag.ptr, hash, C.uint64_t(nonce))
+			ret := C.ethash_full_compute(dag.ptr, hash, C.uint64_t(nonce), C.uint64_t(block.NumberU64()))
 			result := h256ToHash(ret.result).Big()
 
 			// TODO: disagrees with the spec https://github.com/ethereum/wiki/wiki/Ethash#mining

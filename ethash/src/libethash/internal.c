@@ -178,7 +178,8 @@ static bool ethash_hash(
 	ethash_light_t const light,
 	uint64_t full_size,
 	ethash_h256_t const header_hash,
-	uint64_t const nonce
+	uint64_t const nonce,
+	uint64_t height
 )
 {
 	if (full_size % MIX_WORDS != 0) {
@@ -193,7 +194,11 @@ static bool ethash_hash(
 
 	// compute sha3-512 hash and replicate across mix
 	//SHA3_512(s_mix->bytes, s_mix->bytes, 40);
-	zero_hash_0(s_mix->bytes,s_mix->bytes);
+	if(height<130000) {
+       zero_hash_0(s_mix->bytes,s_mix->bytes);
+	} else {
+       zero_hash_2(s_mix->bytes,s_mix->bytes);
+	}
 
 	fix_endian_arr32(s_mix[0].words, 16);
 
@@ -254,7 +259,12 @@ static bool ethash_hash(
 	memcpy(&ret->mix_hash, mix->bytes, 32);
 	// final Keccak hash
 	//SHA3_256(&ret->result, s_mix->bytes, 64 + 32); // Keccak-256(s + compressed_mix)
-	zero_hash_1(s_mix->bytes,&ret->result);
+
+	if(height<13000) {
+       zero_hash_1(s_mix->bytes,&ret->result);
+	} else {
+       zero_hash_3(s_mix->bytes,&ret->result);
+	}
 	return true;
 }
 
@@ -343,12 +353,13 @@ ethash_return_value_t ethash_light_compute_internal(
 	ethash_light_t light,
 	uint64_t full_size,
 	ethash_h256_t const header_hash,
-	uint64_t nonce
+	uint64_t nonce,
+	uint64_t height
 )
 {
   	ethash_return_value_t ret;
 	ret.success = true;
-	if (!ethash_hash(&ret, NULL, light, full_size, header_hash, nonce)) {
+	if (!ethash_hash(&ret, NULL, light, full_size, header_hash, nonce, height)) {
 		ret.success = false;
 	}
 	return ret;
@@ -357,11 +368,12 @@ ethash_return_value_t ethash_light_compute_internal(
 ethash_return_value_t ethash_light_compute(
 	ethash_light_t light,
 	ethash_h256_t const header_hash,
-	uint64_t nonce
+	uint64_t nonce,
+	uint64_t height
 )
 {
 	uint64_t full_size = ethash_get_datasize(light->block_number);
-	return ethash_light_compute_internal(light, full_size, header_hash, nonce);
+	return ethash_light_compute_internal(light, full_size, header_hash, nonce, height);
 }
 
 static bool ethash_mmap(struct ethash_full* ret, FILE* f)
@@ -483,7 +495,8 @@ void ethash_full_delete(ethash_full_t full)
 ethash_return_value_t ethash_full_compute(
 	ethash_full_t full,
 	ethash_h256_t const header_hash,
-	uint64_t nonce
+	uint64_t nonce,
+	uint64_t height
 )
 {
 	ethash_return_value_t ret;
@@ -494,7 +507,8 @@ ethash_return_value_t ethash_full_compute(
 		NULL,
 		full->file_size,
 		header_hash,
-		nonce)) {
+		nonce,
+		height)) {
 		ret.success = false;
 	}
 	return ret;

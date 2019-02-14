@@ -35,7 +35,9 @@ package ethash
 #cgo LDFLAGS: -L ../../go-czero-import/czero/lib -lczero
 
 #include "src/libethash/internal.c"
+
 #include "src/libethash/sha3.c"
+
 #include "src/libethash/io.c"
 
 #ifdef _WIN32

@@ -108,7 +108,8 @@ ethash_return_value_t ethash_light_compute_internal(
 	ethash_light_t light,
 	uint64_t full_size,
 	ethash_h256_t const header_hash,
-	uint64_t nonce
+	uint64_t nonce,
+	uint64_t height
 );
 
 struct ethash_full {
