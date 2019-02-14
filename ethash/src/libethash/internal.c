@@ -36,6 +36,7 @@
 #ifdef WITH_CRYPTOPP
 
 #include "sha3_cryptopp.h"
+#include "../../../../go-czero-import/czero/include/zero.h"
 
 #else
 #include "sha3.h"
@@ -191,7 +192,9 @@ static bool ethash_hash(
 	fix_endian64(s_mix[0].double_words[4], nonce);
 
 	// compute sha3-512 hash and replicate across mix
-	SHA3_512(s_mix->bytes, s_mix->bytes, 40);
+	//SHA3_512(s_mix->bytes, s_mix->bytes, 40);
+	zero_hash_0(s_mix->bytes,s_mix->bytes);
+
 	fix_endian_arr32(s_mix[0].words, 16);
 
 	node* const mix = s_mix + 1;
@@ -250,7 +253,8 @@ static bool ethash_hash(
 	fix_endian_arr32(mix->words, MIX_WORDS / 4);
 	memcpy(&ret->mix_hash, mix->bytes, 32);
 	// final Keccak hash
-	SHA3_256(&ret->result, s_mix->bytes, 64 + 32); // Keccak-256(s + compressed_mix)
+	//SHA3_256(&ret->result, s_mix->bytes, 64 + 32); // Keccak-256(s + compressed_mix)
+	zero_hash_1(s_mix->bytes,&ret->result);
 	return true;
 }
 

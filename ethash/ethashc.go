@@ -28,9 +28,11 @@ package ethash
 */
 
 /*
+
 #cgo CFLAGS: -std=gnu99 -Wall
 #cgo windows CFLAGS: -mno-stack-arg-probe
 #cgo LDFLAGS: -lm
+#cgo LDFLAGS: -L ../../go-czero-import/czero/lib -lczero
 
 #include "src/libethash/internal.c"
 #include "src/libethash/sha3.c"
