@@ -11,6 +11,9 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/sero-cash/go-sero/common"
+	"github.com/sero-cash/go-sero/common/hexutil"
+
 	"github.com/sero-cash/mine-pool/util"
 )
 
@@ -159,17 +162,26 @@ func (r *RPCClient) SubmitBlock(params []string) (bool, error) {
 	return reply, err
 }
 
+type Balance struct {
+	Tkn map[string]*hexutil.Big   `json:"tkn"`
+	Tkt map[string][]*common.Hash `json:"tkt"`
+}
+
 func (r *RPCClient) GetBalance(address string) (*big.Int, error) {
 	rpcResp, err := r.doPost(r.Url, "sero_getBalance", []string{address, "latest"})
 	if err != nil {
 		return nil, err
 	}
-	var reply string
+	var reply Balance
 	err = json.Unmarshal(*rpcResp.Result, &reply)
 	if err != nil {
 		return nil, err
 	}
-	return util.String2Big(reply), err
+	if v, ok := reply.Tkn["SERO"]; ok {
+		return (*big.Int)(v), err
+	}
+
+	return big.NewInt(0), err
 }
 
 func (r *RPCClient) AddressUnlocked(from string) (bool, error) {

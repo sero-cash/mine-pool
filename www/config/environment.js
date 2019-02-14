@@ -2,7 +2,7 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'open-ethereum-pool',
+    modulePrefix: 'sero-pool',
     environment: environment,
     rootURL: '/',
     locationType: 'hash',

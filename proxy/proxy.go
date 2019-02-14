@@ -6,7 +6,6 @@ import (
 	"log"
 	"net"
 	"net/http"
-	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -217,7 +216,7 @@ func (cs *Session) handleMessage(s *ProxyServer, r *http.Request, req *JSONRpcRe
 	}
 
 	vars := mux.Vars(r)
-	login := strings.ToLower(vars["login"])
+	login := vars["login"]
 
 	if !util.IsValidBase58Address(login) {
 		errReply := &ErrorReply{Code: -1, Message: "Invalid login"}
