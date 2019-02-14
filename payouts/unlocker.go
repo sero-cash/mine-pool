@@ -538,3 +538,42 @@ func (u *BlockUnlocker) getExtraRewardForTx(block *rpc.GetBlockReply) (*big.Int,
 	}
 	return amount, nil
 }
+
+var (
+	big1 = big.NewInt(1)
+	big2 = big.NewInt(2)
+	base = big.NewInt(1e+17)
+
+	oriReward    = new(big.Int).Mul(big.NewInt(66773505743), big.NewInt(1000000000))
+	interval     = big.NewInt(8294400)
+	halveNimber  = big.NewInt(3057600)
+	difficultyL1 = big.NewInt(340000000)
+	difficultyL2 = big.NewInt(1700000000)
+	difficultyL3 = big.NewInt(4000000000)
+	difficultyL4 = big.NewInt(17000000000)
+)
+
+func accumulateRewards(Number, Difficulty *big.Int) *big.Int {
+	rewardStd := new(big.Int).Set(oriReward)
+	if Number.Uint64() >= halveNimber.Uint64() {
+		i := new(big.Int).Add(new(big.Int).Div(new(big.Int).Sub(Number, halveNimber), interval), big1)
+		rewardStd.Div(rewardStd, new(big.Int).Exp(big2, i, nil))
+	}
+
+	var reward *big.Int
+	if Difficulty.Cmp(difficultyL1) < 0 { //<3.4
+		reward = new(big.Int).Mul(big.NewInt(10), base)
+	} else if Difficulty.Cmp(difficultyL2) < 0 { //<17
+		ratio := new(big.Int).Add(new(big.Int).Mul(big.NewInt(56), base), new(big.Int).Mul(big.NewInt(16470000000), new(big.Int).Sub(Difficulty, difficultyL1)))
+		reward = new(big.Int).Div(new(big.Int).Mul(rewardStd, ratio), oriReward)
+	} else if Difficulty.Cmp(difficultyL3) < 0 { //<40
+		ratio := new(big.Int).Add(new(big.Int).Mul(big.NewInt(280), base), new(big.Int).Mul(big.NewInt(2170000000), new(big.Int).Sub(Difficulty, difficultyL2)))
+		reward = new(big.Int).Div(new(big.Int).Mul(rewardStd, ratio), oriReward)
+	} else if Difficulty.Cmp(difficultyL4) < 0 { //<170
+		ratio := new(big.Int).Add(new(big.Int).Mul(big.NewInt(330), base), new(big.Int).Mul(big.NewInt(2590000000), new(big.Int).Sub(Difficulty, difficultyL3)))
+		reward = new(big.Int).Div(new(big.Int).Mul(rewardStd, ratio), oriReward)
+	} else {
+		reward = rewardStd
+	}
+	return reward
+}
