@@ -252,6 +252,12 @@ func (s *ApiServer) AccountIndex(w http.ResponseWriter, r *http.Request) {
 	s.minersMu.Lock()
 	defer s.minersMu.Unlock()
 
+	if !util.IsValidBase58Address(login) {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Invalid adress %s", login)
+		return
+	}
+
 	reply, ok := s.miners[login]
 	now := util.MakeTimestamp()
 	cacheIntv := int64(s.statsIntv / time.Millisecond)
