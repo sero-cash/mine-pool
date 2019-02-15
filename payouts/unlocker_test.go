@@ -66,64 +66,6 @@ func TestWeiToShannonInt64(t *testing.T) {
 	}
 }
 
-func TestGetUncleReward(t *testing.T) {
-	rewards := make(map[int64]string)
-	expectedRewards := map[int64]string{
-		1: "4375000000000000000",
-		2: "3750000000000000000",
-		3: "3125000000000000000",
-		4: "2500000000000000000",
-		5: "1875000000000000000",
-		6: "1250000000000000000",
-		7: "625000000000000000",
-	}
-	for i := int64(1); i < 8; i++ {
-		rewards[i] = getUncleReward(1, i+1).String()
-	}
-	for i, reward := range rewards {
-		if expectedRewards[i] != rewards[i] {
-			t.Errorf("Incorrect uncle reward for %v, expected %v vs %v", i, expectedRewards[i], reward)
-		}
-	}
-}
-
-func TestGetByzantiumUncleReward(t *testing.T) {
-	rewards := make(map[int64]string)
-	expectedRewards := map[int64]string{
-		1: "2625000000000000000",
-		2: "2250000000000000000",
-		3: "1875000000000000000",
-		4: "1500000000000000000",
-		5: "1125000000000000000",
-		6: "750000000000000000",
-		7: "375000000000000000",
-	}
-	for i := int64(1); i < 8; i++ {
-		rewards[i] = getUncleReward(byzantiumHardForkHeight, byzantiumHardForkHeight+i).String()
-	}
-	for i, reward := range rewards {
-		if expectedRewards[i] != rewards[i] {
-			t.Errorf("Incorrect uncle reward for %v, expected %v vs %v", i, expectedRewards[i], reward)
-		}
-	}
-}
-
-func TestGetRewardForUngle(t *testing.T) {
-	reward := getRewardForUncle(1).String()
-	expectedReward := "156250000000000000"
-	if expectedReward != reward {
-		t.Errorf("Incorrect uncle bonus for height %v, expected %v vs %v", 1, expectedReward, reward)
-	}
-}
-
-func TestGetByzantiumRewardForUngle(t *testing.T) {
-	reward := getRewardForUncle(byzantiumHardForkHeight).String()
-	expectedReward := "93750000000000000"
-	if expectedReward != reward {
-		t.Errorf("Incorrect uncle bonus for height %v, expected %v vs %v", byzantiumHardForkHeight, expectedReward, reward)
-	}
-}
-
 func TestMatchCandidate(t *testing.T) {
 	gethBlock := &rpc.GetBlockReply{Hash: "0x12345A", Nonce: "0x1A"}
 	parityBlock := &rpc.GetBlockReply{Hash: "0x12345A", SealFields: []string{"0x0A", "0x1A"}}
