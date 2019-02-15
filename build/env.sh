@@ -37,6 +37,8 @@ fi
 GOPATH="$workspace"
 GOBIN="$PWD/build/bin"
 export GOPATH GOBIN
+LD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_DARWIN_AMD64:$serodir/go-czero-import/czero/lib_LINUX_AMD64_V3"
+export LD_LIBRARY_PATH
 
 # Run the command inside the workspace.
 cd "$serodir/mine-pool"
