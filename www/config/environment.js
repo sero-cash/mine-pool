@@ -15,19 +15,19 @@ module.exports = function(environment) {
 
     APP: {
       // API host and port
-      ApiUrl: '//example.net/',
+      ApiUrl: '//203.195.255.129:8080/',
 
       // HTTP mining endpoint
-      HttpHost: 'http://example.net',
-      HttpPort: 8888,
+      HttpHost: 'http://129.204.197.105',
+      HttpPort: 9999,
 
       // Stratum mining endpoint
-      StratumHost: 'example.net',
+      StratumHost: '127.0.0.1',
       StratumPort: 8008,
 
       // Fee and payout details
       PoolFee: '1%',
-      PayoutThreshold: '0.5  SERO',
+      PayoutThreshold: '1 SERO',
 
       // For network hashrate (change for your favourite fork)
       BlockTime: 14.4
@@ -38,7 +38,7 @@ module.exports = function(environment) {
     /* Override ApiUrl just for development, while you are customizing
       frontend markup and css theme on your workstation.
     */
-    ENV.APP.ApiUrl = 'http://localhost:8080/'
+    ENV.APP.ApiUrl = 'http://203.195.255.129:8080/'
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -53,7 +53,7 @@ module.exports = function(environment) {
     // keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
-
+sh
     ENV.APP.rootElement = '#ember-testing';
   }
 

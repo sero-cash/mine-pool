@@ -1,7 +1,7 @@
 {
   "name": "sero-pool",
   "version": "0.0.0",
-  "description": "Sero Pool",
+  "description": "SERO Pool",
   "private": true,
   "directories": {
     "doc": "doc",
