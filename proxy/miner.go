@@ -20,8 +20,9 @@ func (s *ProxyServer) processShare(login, id, ip string, t *BlockTemplate, param
 	shareDiff := s.config.Proxy.Difficulty
 
 	h, ok := t.headers[hashNoNonce]
+	log.Printf(">>>>>processShare %v@%v with %v,head: %v ", login, ip, id, hashNoNonce)
 	if !ok {
-		log.Printf("Stale share from %v@%v", login, ip)
+		log.Printf("Stale share from %v@%v with %v", login, ip, id)
 		return false, false
 	}
 

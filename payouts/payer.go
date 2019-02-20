@@ -124,6 +124,7 @@ func (u *PayoutsProcessor) process() {
 		amountInWei := new(big.Int).Mul(amountInShannon, util.Shannon)
 
 		if !u.reachedThreshold(amountInShannon) {
+			log.Printf("%v ammount %d not reach threshold", login, amountInShannon)
 			continue
 		}
 		mustPay++
