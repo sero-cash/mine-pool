@@ -32,17 +32,65 @@ if [ ! -L "$serodir/go-czero-import" ]; then
     cd "$root"
 fi
 
+
+LD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_LINUX_AMD64_V3"
+export LD_LIBRARY_PATH
+DYLD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_DARWIN_AMD64"
+export DYLD_LIBRARY_PATH
+
+
+mkdir -p "$root/czero/lib"
+
+
+if [ $1 == "linux-v3" ]; then
+    rm -rf $root/../go-czero-import/czero/lib/*
+    cd "$root/../go-czero-import/czero"
+    cp -rf lib_LINUX_AMD64_V3/* lib/
+    rm -rf $root/czero/lib/*
+    cp -rf lib_LINUX_AMD64_V3/* $root/czero/lib/
+    LD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_LINUX_AMD64_V3"
+    export LD_LIBRARY_PATH
+    shift 1
+elif [ $1 == "linux-v4" ];then
+    rm -rf $root/../go-czero-import/czero/lib/*
+    cd "$root/../go-czero-import/czero"
+    cp -rf lib_LINUX_AMD64_V4/* lib/
+    rm -rf $root/czero/lib/*
+    cp -rf lib_LINUX_AMD64_V4/* $root/czero/lib/
+    LD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_LINUX_AMD64_V4"
+    export LD_LIBRARY_PATH
+    shift 1
+elif [ $1 == "darwin-amd64" ];then
+    rm -rf $root/../go-czero-import/czero/lib/*
+    cd "$root/../go-czero-import/czero"
+    cp -rf lib_DARWIN_AMD64/* lib/
+    rm -rf $root/czero/lib/*
+    cp -rf lib_DARWIN_AMD64/* $root/czero/lib/
+    DYLD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_DARWIN_AMD64"
+    export DYLD_LIBRARY_PATH
+    shift 1
+elif [ $1 == "windows-amd64" ];then
+    rm -rf $root/../go-czero-import/czero/lib/*
+    cd "$root/../go-czero-import/czero"
+    cp -rf lib_WINDOWS_AMD64/* lib/
+    rm -rf $root/czero/lib/*
+    cp -rf lib_WINDOWS_AMD64/* $root/czero/lib/
+    shift 1
+else
+     echo "default lib"
+fi
+
+
 # Set up the environment to use the workspace.
 # Also add Godeps workspace so we build using canned dependencies.
 GOPATH="$workspace"
-GOBIN="$PWD/build/bin"
-export GOPATH GOBIN
-LD_LIBRARY_PATH="$serodir/go-czero-import/czero/lib_DARWIN_AMD64:$serodir/go-czero-import/czero/lib_LINUX_AMD64_V3"
-export LD_LIBRARY_PATH
+export GOPATH
 
 # Run the command inside the workspace.
 cd "$serodir/mine-pool"
 PWD="$serodir/mine-pool"
+
+echo $PWD
 
 # Launch the arguments with the configured environment.
 exec "$@"
