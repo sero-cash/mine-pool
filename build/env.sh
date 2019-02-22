@@ -84,7 +84,8 @@ fi
 # Set up the environment to use the workspace.
 # Also add Godeps workspace so we build using canned dependencies.
 GOPATH="$workspace"
-export GOPATH
+GOBIN="$root/build/bin"
+export GOPATH GOBIN
 
 # Run the command inside the workspace.
 cd "$serodir/mine-pool"
