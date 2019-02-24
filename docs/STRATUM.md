@@ -19,7 +19,7 @@ Request looks like:
   "id": 1,
   "jsonrpc": "2.0",
   "method": "sero_submitLogin",
-  "params": ["0xb85150eb365e7df0941f0cf08235f987ba91506a"]
+  "params": ["38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS"]
 }
 ```
 
@@ -30,7 +30,7 @@ Request can include additional 2nd param (email for example):
   "id": 1,
   "jsonrpc": "2.0",
   "method": "sero_submitLogin",
-  "params": ["0xb85150eb365e7df0941f0cf08235f987ba91506a", "admin@example.net"]
+  "params": ["38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS", "admin@example.net"]
 }
 ```
 
@@ -63,7 +63,8 @@ Successful response:
   "result": [
       "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
       "0x5eed00000000000000000000000000005eed0000000000000000000000000000",
-      "0xd1ff1c01710000000000000000000000d1ff1c01710000000000000000000000"
+      "0xd1ff1c01710000000000000000000000d1ff1c01710000000000000000000000",
+      "1124"
     ]
 }
 ```

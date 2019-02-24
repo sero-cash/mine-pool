@@ -36,11 +36,11 @@ After payout session, payment module will perform `BGSAVE` (background saving) o
 
 ## Resolving Failed Payments (automatic)
 
-If your payout is not logged and not confirmed by Ethereum network you can resolve it automatically. You need to payouts in maintenance mode by setting up `RESOLVE_PAYOUT=1` or `RESOLVE_PAYOUT=True` environment variable:
+If your payout is not logged and not confirmed by Sero network you can resolve it automatically. You need to payouts in maintenance mode by setting up `RESOLVE_PAYOUT=1` or `RESOLVE_PAYOUT=True` environment variable:
 
-`RESOLVE_PAYOUT=1 ./build/bin/open-ethereum-pool payouts.json`.
+`RESOLVE_PAYOUT=1 ./build/bin/mine-pool payouts.json`.
 
-Payout module will fetch all rows from Redis with key `eth:payments:pending` and credit balance back to miners. Usually you will have only single entry there.
+Payout module will fetch all rows from Redis with key `sero:payments:pending` and credit balance back to miners. Usually you will have only single entry there.
 
 If you see `No pending payments to resolve` we have no data about failed debits.
 
@@ -48,13 +48,13 @@ If there was a debit operation performed which is not followed by actual money t
 
 ```
 Will credit back following balances:
-Address: 0xb85150eb365e7df0941f0cf08235f987ba91506a, Amount: 166798415 Shannon, 2016-05-11 08:14:34
+Address: 38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS, Amount: 166798415 Shannon, 2016-05-11 08:14:34
 ```
 
 followed by
 
 ```
-Credited 166798415 Shannon back to 0xb85150eb365e7df0941f0cf08235f987ba91506a
+Credited 166798415 Shannon back to 38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS
 ```
 
 Usually every maintenance run ends with following message and halt:
@@ -68,19 +68,19 @@ Unset `RESOLVE_PAYOUT=1` or run payouts with `RESOLVE_PAYOUT=0`.
 
 ## Resolving Failed Payment (manual)
 
-You can perform manual maintenance using `geth` and `redis-cli` utilities.
+You can perform manual maintenance using `gero` and `redis-cli` utilities.
 
 ### Check For Failed Transactions:
 
 Perform the following command in a `redis-cli`:
 
 ```
-ZREVRANGE "eth:payments:pending" 0 -1 WITHSCORES
+ZREVRANGE "sero:payments:pending" 0 -1 WITHSCORES
 ```
 
 Result will be like this:
 
-> 1) "0xb85150eb365e7df0941f0cf08235f987ba91506a:25000000"
+> 1) "38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS:25000000"
 
 It's a pair of `LOGIN:AMOUNT`.
 
@@ -93,10 +93,10 @@ It's a `UNIXTIME`
 **Make sure there is no TX sent using block explorer. Skip this step if payment actually exist in a blockchain.**
 
 ```javascript
-eth.sendTransaction({
-  from: eth.coinbase,
-  to: '0xb85150eb365e7df0941f0cf08235f987ba91506a',
-  value: web3.toWei(25000000, 'shannon')
+sero.sendTransaction({
+  from: sero.coinbase,
+  to: '38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS',
+  value: web3.toTa(25000000, 'shannon')
 })
 
 // => 0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331
@@ -109,30 +109,30 @@ eth.sendTransaction({
 Also usable for fixing missing payment entries.
 
 ```
-ZADD "eth:payments:all" 1462920526 0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331:0xb85150eb365e7df0941f0cf08235f987ba91506a:25000000
+ZADD "sero:payments:all" 1462920526 0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331:38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS:25000000
 ```
 
 ```
-ZADD "eth:payments:0xb85150eb365e7df0941f0cf08235f987ba91506a" 1462920526 0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331:25000000
+ZADD "sero:payments:38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS" 1462920526 0xe670ec64341771606e55d6b4ca35a1a6b75ee3d5145a99d05921026d1527331:25000000
 ```
 
 ### Delete Erroneous Payment Entry
 
 ```
-ZREM "eth:payments:pending" "0xb85150eb365e7df0941f0cf08235f987ba91506a:25000000"
+ZREM "sero:payments:pending" "38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS:25000000"
 ```
 
 ### Update Internal Stats
 
 ```
-HINCRBY "eth:finances" pending -25000000
-HINCRBY "eth:finances" paid 25000000
+HINCRBY "sero:finances" pending -25000000
+HINCRBY "sero:finances" paid 25000000
 ```
 
 ### Unlock Payouts
 
 ```
-DEL "eth:payments:lock"
+DEL "sero:payments:lock"
 ```
 
 ## Resolving Missing Payment Entries
