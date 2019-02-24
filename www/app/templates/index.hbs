@@ -41,7 +41,10 @@
   <div>
     <hr/>
     <h4 class="note note-info text-center">
-      cminer.exe -P {{config.HttpHost}}:{{config.HttpPort}}/&lt;address&gt;/&lt;worker&gt; --cpu=&lt;cpuNum&gt;
+      cminer.exe -P {{config.HttpHost}}:{{config.HttpPort}}/&lt;address&gt;/&lt;worker&gt; --cpu=0
     </h4>
+  </div>
+  <div class="alert alert-info" role="alert">
+    Set --cpu=0, cminer will set the number of Mining Thread to the number of CPU Threads minus one.
   </div>
 </div>

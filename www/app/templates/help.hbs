@@ -9,7 +9,7 @@
   <dl class="dl-horizontal">
     <dt>YOUR_SERO_ADDRESS</dt>
     <dd>This is your address for payouts, generate one with gero<br/>
-      <strong>Example:</strong> <code>23LTcaWGKZqmPxecbBedXKkiPB6kSGq8q4QYk5jwQzMFLGDTg8YGweYYjz7YSMKgdhxsqx8zDuSnpwWnnrt2dSD9</code>.
+      <strong>Example:</strong> <code>38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS</code>.
     </dd>
     <dt>RIG_ID</dt>
     <dd>
@@ -20,7 +20,11 @@
   </dl>
   <p>
     <strong>Full example:</strong>
-    cminer -P {{config.HttpHost}}:{{config.HttpPort}}/23LTcaWGKZqmPxecbBedXKkiPB6kSGq8q4QYk5jwQzMFLGDTg8YGweYYjz7YSMKgdhxsqx8zDuSnpwWnnrt2dSD9/myfarm --cpu=cup_num
+    cminer -P {{config.HttpHost}}:{{config.HttpPort}}/38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS/myfarm --cpu=0
+    <div class="alert alert-info" role="alert">
+        <span class="sr-only">Notice:</span>
+         Set --cpu=0, cminer will set the number of Mining Thread to the number of CPU Threads minus one.
+     </div>
   </p>
 
 </div>
