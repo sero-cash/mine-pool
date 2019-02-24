@@ -11,6 +11,8 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/sero-cash/go-czero-import/cpt"
+
 	"github.com/yvasiyarov/gorelic"
 
 	"github.com/sero-cash/mine-pool/api"
@@ -72,6 +74,8 @@ func readConfig(cfg *proxy.Config) {
 }
 
 func main() {
+	cpt.ZeroInit_NoCircuit()
+
 	readConfig(&cfg)
 	rand.Seed(time.Now().UnixNano())
 

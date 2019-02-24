@@ -237,7 +237,7 @@ func (cs *Session) handleMessage(s *ProxyServer, r *http.Request, req *JSONRpcRe
 			cs.sendError(req.Id, errReply)
 			break
 		}
-		log.Printf("<<<<<get work by %v@%v with %v ,head: %v", login, cs.ip, vars["id"], reply[0])
+		//log.Printf("<<<<<get work by %v@%v with %v ,head: %v", login, cs.ip, vars["id"], reply[0])
 		cs.sendResult(req.Id, &reply)
 	case "sero_submitWork":
 		if req.Params != nil {

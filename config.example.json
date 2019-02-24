@@ -11,7 +11,7 @@
 		"behindReverseProxy": false,
 		"blockRefreshInterval": "120ms",
 		"stateUpdateInterval": "3s",
-		"difficulty": 150269,
+		"difficulty": 200000,
 		"hashrateExpiration": "3h",
 
 		"healthCheck": true,
@@ -82,7 +82,7 @@
 
 	"unlocker": {
 		"enabled": true,
-		"poolFee": 1.0,
+		"poolFee": 5.0,
 		"poolFeeAddress": "",
 		"donate": true,
 		"depth": 120,
@@ -95,12 +95,12 @@
 
 	"payouts": {
 		"enabled": true,
-		"requirePeers": 0,
-		"interval": "1m",
+		"requirePeers": 10,
+		"interval": "12h",
 		"daemon": "http://127.0.0.1:8545",
-		"timeout": "10s",
+		"timeout": "120s",
 		"address": "38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS",
-		"gas": "21000",
+		"gas": "25000",
 		"gasPrice": "10000000000",
 		"autoGas": true,
 		"threshold": 500000000,
