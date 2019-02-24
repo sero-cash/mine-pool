@@ -4,26 +4,25 @@ Mine pool is a open soruce Sero mining pool using PPLNS mode
 
 ### Features
 
-**This pool is being further developed to provide an easy to use pool for Ethereum miners. This software is functional however an optimised release of the pool is expected soon. Testing and bug submissions are welcome!**
+**This pool is being further developed to provide an easy to use pool for SERO miners. This software is functional however an optimised release of the pool is expected soon. Testing and bug submissions are welcome!**
 
 * Support for HTTP and Stratum mining
 * Detailed block stats with luck percentage and full reward
-* Failover geth instances: geth high availability built in
+* Failover gero instances: gero high availability built in
 * Modern beautiful Ember.js frontend
 * Separate stats for workers: can highlight timed-out workers so miners can perform maintenance of rigs
 * JSON-API for stats
 
 #### Proxies
 
-* [Ether-Proxy](https://github.com/sammy007/ether-proxy) HTTP proxy with web interface
-* [Stratum Proxy](https://github.com/Atrides/eth-proxy) for Ethereum
+* [Ether-Proxy]   HTTP proxy with web interface
 
 ### Building on Linux
 
 Dependencies:
 
   * go >= 1.9
-  * geth or parity
+  * gero
   * redis-server >= 2.8.0
   * nodejs >= 4 LTS
   * nginx
