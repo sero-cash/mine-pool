@@ -37,12 +37,12 @@ pool-linux: pool-linux-amd64-v3 poo;-linux-amd64-v4
 pool-linux-amd64-v3:
 	build/env.sh linux-v3 go run build/pci.go  xgo -- --go=$(GO) --out=mine-pool-v3 --targets=linux/amd64 -v ./
 	@echo "Linux centos amd64 cross compilation done:"
-	@ls -ld $(GOBIN)/gero-v3-linux-* | grep amd64
+	@ls -ld $(GOBIN)/mine-pool-v3-linux-* | grep amd64
 
 gero-linux-amd64-v4:
 	build/env.sh linux-v4 go run build/pci.go xgo -- --go=$(GO) --out=mine-pool-v4 --targets=linux/amd64 -v ./
 	@echo "Linux  ubuntu amd64 cross compilation done:"
-	@ls -ld $(GOBIN)/gero-v4-linux-* | grep amd64
+	@ls -ld $(GOBIN)/mine-pool-v4-linux-* | grep amd64
 
 pool-darwin-amd64:
 	build/env.sh darwin-amd64 go run build/pci.go xgo -- --go=$(GO) --targets=darwin/amd64 -v ./
