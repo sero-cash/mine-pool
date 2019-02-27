@@ -39,6 +39,8 @@ Clone & compile:
     cd  mine-pool
     #v3, v4 stands for linux kernel version
     make linux-v3 or make linux-v4
+    
+Note: if Ubuntu you need modify build/env.sh to BASH shell.    
 
 Install redis-server.
 
