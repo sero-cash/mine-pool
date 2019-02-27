@@ -43,7 +43,7 @@ Clone & compile:
 Install redis-server.
 
 ### Running Pool
-
+    export LD_LIBRARY_PATH="$PWD/czero/lib"
     ./build/bin/mine-pool config.json
 
 You can use Ubuntu upstart - check for sample config in <code>upstart.conf</code>.
