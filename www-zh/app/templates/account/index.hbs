@@ -1,0 +1,38 @@
+<div class="container">
+  {{#if model.workers}}
+  <h4>Your Workers</h4>
+  <div class="table-responsive">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>矿工编号</th>
+          <th>算力 (30分钟)</th>
+          <th>算力 (3小时)</th>
+          <th>最近一次提交</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each-in model.workers as |k v|}}
+          <tr class="{{if v.offline "warning" "success"}}">
+            <td>{{k}}</td>
+            <td>{{format-hashrate v.hr}}</td>
+            <td>{{format-hashrate v.hr2}}</td>
+            <td>{{format-relative (seconds-to-ms v.lastBeat)}}</td>
+          </tr>
+        {{/each-in}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+    <h3>无在线矿工</h3>
+  {{/if}}
+  <div class="alert alert-info" role="alert">
+    <span class="sr-only">Notice:</span>
+    初期，您的平均算力将在波动中逐渐平稳调整，直到您有足够的贡献分享提交。<br/>
+    在两个算力中，短时间约等于30分钟，长时间通常等于3小时个。<br/>
+    如果他们在1/2短时间中没有提交贡献份额，那么会被认为是离线（故障）设备 离线机器将在表单中突出显示，所以您可以据此执行设备维护。
+  </div>
+  <div class="alert alert-info" role="alert">
+    <strong>您的挖矿数据JSON-API地址:</strong> <a href="/api/accounts/{{model.login}}"><span style="word-break: break-all; white-space: normal;" >/api/accounts/{{model.login}}</span></a>
+  </div>
+</div>

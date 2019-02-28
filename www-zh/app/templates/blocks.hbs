@@ -1,0 +1,26 @@
+<div class="jumbotron">
+  <div class="container">
+    <p class="lead">矿池保证将所有收益（包括交易费)全部支付给矿工</p>
+    <strong>
+      块被确认最多需要在 <u>up to</u> </strong> <span class="label label-success">520</span> <strong>个区块之后。
+      通常情况下，不需要这么多。
+    </strong>
+  </div>
+</div>
+<div class="container">
+  {{#if model.luck}}
+    {{partial "luck"}}
+  {{/if}}
+  <ul class="nav nav-tabs">
+    {{#active-li currentWhen='blocks.index' role='presentation'}}
+      {{#link-to 'blocks.index'}}已确认块 <span class="badge alert-success">{{format-number model.maturedTotal}}</span>{{/link-to}}
+    {{/active-li}}
+    {{#active-li currentWhen='blocks.immature' role='presentation'}}
+      {{#link-to 'blocks.immature'}}待确认块 <span class="badge alert-success">{{format-number model.immatureTotal}}</span>{{/link-to}}
+    {{/active-li}}
+    {{#active-li currentWhen='blocks.pending' role='presentation'}}
+      {{#link-to 'blocks.pending'}}新发现的块 <span class="badge alert-info">{{format-number model.candidatesTotal}}</span>{{/link-to}}
+    {{/active-li}}
+  </ul>
+  {{outlet}}
+</div>

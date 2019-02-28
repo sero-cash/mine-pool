@@ -1,0 +1,24 @@
+{{#if model.immature}}
+<h4>Immature Blocks</h4>
+
+<div class="table-responsive">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>区块高度</th>
+        <th>区块哈希</th>
+        <th>发现时间</th>
+        <th>幸运度</th>
+        <th>奖励</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each model.immature as |block|}}
+        {{partial "blocks/block"}}
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<h3>No immature blocks yet</h3>
+{{/if}}

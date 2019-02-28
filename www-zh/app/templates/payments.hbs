@@ -1,0 +1,39 @@
+<div class="jumbotron">
+  <div class="container">
+    <p class="lead">矿池将在每一支付周期，自动支付矿工收益</p>
+    <strong>总支付笔数:</strong> <span class="label label-info">{{model.paymentsTotal}}</span>
+  </div>
+</div>
+<div class="container">
+  {{#if model.payments}}
+  <h4>最近支付记录</h4>
+  <div class="table-responsive">
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>支付时间</th>
+          <th>支付金额</th>
+          <th>收款地址</th>
+          <th>交易哈希</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each model.payments as |tx|}}
+          <tr>
+            <td>{{format-date-locale tx.timestamp}}</td>
+            <td>{{format-number tx.formatAmount}}</td>
+            <td>
+              <span title="{{tx.address}}">{{format-address tx.address}}</span>
+            </td>
+            <td>
+              <a href="https://explorer.web.sero.cash/txsInfo.html?hash={{tx.tx}}" class="hash" rel="nofollow" target="_blank">{{format-tx tx.tx}}</a>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <h3>无支付记录</h3>
+  {{/if}}
+</div>

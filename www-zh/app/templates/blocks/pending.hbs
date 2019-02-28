@@ -1,0 +1,31 @@
+{{#if model.candidates}}
+<h4>Recently Found Blocks</h4>
+<div class="table-responsive">
+  <table class="table table-condensed table-striped">
+    <thead>
+      <tr>
+        <th>区块高度</th>
+        <th>发现时间</th>
+        <th>幸运度</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each model.candidates as |block|}}
+      <tr>
+        <td><{{format-number block.height}}</td>
+        <td>{{format-date-locale block.timestamp}}</td>
+        <td>
+          {{#if block.isLucky}}
+          <span class="label label-success">{{format-number block.variance style='percent'}}</span>
+          {{else}}
+          <span class="label label-info">{{format-number block.variance style='percent'}}</span>
+          {{/if}}
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{else}}
+<h3>No new blocks yet</h3>
+{{/if}}

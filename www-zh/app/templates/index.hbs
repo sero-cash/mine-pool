@@ -1,0 +1,120 @@
+<div class="jumbotron ">
+  <div class="container">
+    <div role="warning" class="alert alert-info">
+      <h2 class="text-center">欢迎来到{{config.PoolName}}</h2>
+      <h4 class="text-center">挖矿地址：{{config.HttpHost}}:{{config.HttpPort}}</h4>
+      <h4 class="text-center">支付周期：{{config.PayoutsInterval}}</h4>
+      <h4 class="text-center">起付额：{{config.PayoutThreshold}}</h4>
+    </div>
+    <hr/>
+    <div class="row">
+      <div class="col-md-2 text-center">
+        <div style="height: 130px" class="panel panel-info">
+          <div class="panel-heading">
+            <h3 class="panel-title">在线矿工</h3>
+          </div>
+          <div class="panel-body">
+            <h4>{{format-number stats.model.minersTotal}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 text-center">
+        <div style="height: 130px" class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">矿池费用</h3>
+          </div>
+          <div class="panel-body">
+            <h4>1%</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 text-center">
+        <div style="height: 130px" class="panel panel-warning">
+          <div class="panel-heading">
+            <h3 class="panel-title">矿池算力</h3>
+          </div>
+          <div class="panel-body">
+            <h4>{{format-hashrate stats.model.hashrate}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 text-center">
+        <div style="height: 130px" class="panel panel-danger">
+          <div class="panel-heading">
+            <h3 class="panel-title">全网算力</h3>
+          </div>
+          <div class="panel-body">
+            <h4>{{format-hashrate stats.hashrate}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 text-center">
+        <div style="height: 130px" class="panel panel-success">
+          <div class="panel-heading">
+            <h3 class="panel-title">全网难度</h3>
+          </div>
+          <div class="panel-body">
+            <h4>{{with-metric-prefix stats.difficulty}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-2 text-center">
+        <div style="height: 130px" class="panel panel-primary">
+          <div class="panel-heading">
+            <h3 class="panel-title">区块高度</h3>
+          </div>
+          <div class="panel-body">
+            <h4>{{format-number stats.height}}</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<hr/>
+<div class="container">
+  <div class="stats">
+    <h4>矿机状态 &amp; 支付记录</h4>
+    <div class="input-group">
+      {{input value=cachedLogin class="form-control" placeholder="输入你的SERO钱包地址"}}
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button" {{action 'lookup' cachedLogin}}>
+          <span style="display: inline;"><i class="fa fa-search"></i> 查询</span>
+        </button>
+      </span>
+    </div>
+  </div>
+  <div>
+    <hr/>
+    <div class="note note-info" style="word-break: break-all; white-space: normal;" >
+      <h4 class="text-center" style="word-break: break-all; white-space: normal;" >cminer.exe -P {{config.HttpHost}}:{{config.HttpPort}}/&lt;address&gt;/&lt;worker&gt; --cpu=0</h4>
+      <hr/>
+      <h5 style="word-break: break-all; white-space: normal;" >address：你的SERO钱包地址</h5>
+      <h5 style="word-break: break-all; white-space: normal;" >worker：矿工编号，仅支持8位以内字母、数字、下划线组合</h5>
+      <h5 style="word-break: break-all; white-space: normal;" >--cpu：设置挖矿线程数，设置为0表示挖矿线程数为cpu最大线程减1</h5>
+    </div>
+
+  </div>
+  <div class="stats">
+    <h4>矿工客户下载方式</h4>
+    <h4 class="note note-info" style="word-break: break-all; white-space: normal;" >
+      github: <a target="_blank" href="https://github.com/sero-cash/cminer/releases">https://github.com/sero-cash/cminer/releases</a>
+    </h4>
+    <h4 class="note note-info" style="word-break: break-all; white-space: normal;" >
+      百度网盘:
+      <hr/>
+      <h5 style="word-break: break-all; white-space: normal;" >windows版本:<a target="_blank" href="https://pan.baidu.com/s/1R7RhQH34NDC-BB6VunXZgg">https://pan.baidu.com/s/1R7RhQH34NDC-BB6VunXZgg</a></h5>
+      <h5 style="word-break: break-all; white-space: normal;" >Mac版本:<a target="_blank" href="https://pan.baidu.com/s/1mPmHQb6iwkDQNAMb2JEsMA">https://pan.baidu.com/s/1mPmHQb6iwkDQNAMb2JEsMA</a></h5>
+      <h5 style="word-break: break-all; white-space: normal;" >--cpu：设置挖矿线程数，设置为0表示挖矿线程数为cpu最大线程减1</h5>
+      密码:00h1
+      https://pan.baidu.com/s/1mPmHQb6iwkDQNAMb2JEsMA 密码:ik8v
+      Linux版本:https://pan.baidu.com/s/1b1PyugXd4Us6aEABtUZ2cw 密码:s5e2
+    </h4>
+  </div>
+</div>
+

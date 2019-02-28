@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="page-header">
+    <h1>How To Mine</h1>
+  </div>
+  <p class="lead">In order to mine on this pool you need to have an
+    <a href="https://github.com/sero-cash/cminer/releases" rel="nofollow" target="_blank">cminer</a> installation
+    pointed to<br/><code>
+      <span style="word-break: break-all; white-space: normal;">
+        {{config.HttpHost}}:{{config.HttpPort}}/YOUR_SERO_ADDRESS/RIG_ID
+      </span>
+    </code>
+  </p>
+  <dl class="dl-horizontal">
+    <dt>YOUR_SERO_ADDRESS</dt>
+    <dd>This is your address for payouts, generate one with gero<br/>
+      <strong>Example:</strong>
+      <code>
+            <span style="word-break: break-all; white-space: normal;">
+              38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS
+            </span>
+      </code>.
+    </dd>
+    <dt>RIG_ID</dt>
+    <dd>
+      ID of your farm to distinguish it from your other rig. If you have just one rig, feel free to omit this param.
+      This param must be short alphanumeric string with optional dashes and underscores.<br/>
+      <strong>Example:</strong> <code>rig-1</code>
+    </dd>
+  </dl>
+  <p>
+    <strong>Full example:</strong>
+    <span style="word-break: break-all; white-space: normal;">
+          cminer -P {{config.HttpHost}}:{{config.HttpPort}}/38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS/myfarm --cpu=0
+    </span>
+
+    <div class="alert alert-info" role="alert">
+        <span class="sr-only">Notice:</span>
+         Set --cpu=0, cminer will set the number of Mining Thread to the number of CPU Threads minus one.
+     </div>
+  </p>
+
+</div>
