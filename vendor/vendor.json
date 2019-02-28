@@ -3,10 +3,16 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "yGnECJsPZBlk5khJmLUP8thNNxM=",
+			"checksumSHA1": "oHwfghigjTz8Xs+ssxwdl/atb44=",
+			"path": "github.com/gorilla/context",
+			"revision": "51ce91d2eaddeca0ef29a71d766bb3634dadf729",
+			"revisionTime": "2018-10-12T15:35:48Z"
+		},
+		{
+			"checksumSHA1": "9YQYg2PkA7lkFuUyCQGUv0vX5zA=",
 			"path": "github.com/gorilla/mux",
-			"revision": "a7962380ca08b5a188038c69871b8d3fbdf31e89",
-			"revisionTime": "2019-01-25T16:05:53Z"
+			"revision": "8559a4f775fc329165fe32bd4c2543de8ada8fce",
+			"revisionTime": "2019-02-17T15:38:49Z"
 		},
 		{
 			"checksumSHA1": "suL7yZNBxN847Lmrt2bMIIwtJ4g=",
@@ -63,5 +69,5 @@
 			"revisionTime": "2016-06-27T09:56:34Z"
 		}
 	],
-	"rootPath": "github.com/sero-cash/open-sero-pool"
+	"rootPath": "github.com/sero-cash/mine-pool"
 }

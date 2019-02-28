@@ -10,8 +10,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/gorilla/context"
 
+	"github.com/gorilla/mux"
 	"github.com/sero-cash/mine-pool/policy"
 	"github.com/sero-cash/mine-pool/rpc"
 	"github.com/sero-cash/mine-pool/storage"
@@ -130,7 +131,7 @@ func (s *ProxyServer) Start() {
 	r.Handle("/{login}", s)
 	srv := &http.Server{
 		Addr:           s.config.Proxy.Listen,
-		Handler:        r,
+		Handler:        context.ClearHandler(r),
 		MaxHeaderBytes: s.config.Proxy.LimitHeadersSize,
 	}
 	err := srv.ListenAndServe()
