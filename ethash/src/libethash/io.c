@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include "stub.h"
 
 enum ethash_io_rc ethash_io_prepare(
 	char const* dirname,
@@ -113,7 +114,7 @@ enum ethash_io_rc ethash_io_prepare(
 set_file:
 	*output_file = f;
 free_memo:
-	free(tmpfile);
+	stub_free(tmpfile,"ethash_io_create_filename");
 end:
 	return ret;
 }

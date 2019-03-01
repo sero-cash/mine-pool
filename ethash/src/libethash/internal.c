@@ -32,6 +32,7 @@
 #include "internal.h"
 #include "data_sizes.h"
 #include "io.h"
+#include "stub.h"
 
 #ifdef WITH_CRYPTOPP
 
@@ -310,11 +311,11 @@ bool ethash_quick_check_difficulty(
 ethash_light_t ethash_light_new_internal(uint64_t cache_size, ethash_h256_t const* seed)
 {
 	struct ethash_light *ret;
-	ret = calloc(sizeof(*ret), 1);
+	ret = stub_calloc(sizeof(*ret), 1, "ethash_light");
 	if (!ret) {
 		return NULL;
 	}
-	ret->cache = malloc((size_t)cache_size);
+	ret->cache = stub_malloc((size_t)cache_size, "ethash_light.cache");
 	if (!ret->cache) {
 		goto fail_free_light;
 	}
@@ -326,9 +327,9 @@ ethash_light_t ethash_light_new_internal(uint64_t cache_size, ethash_h256_t cons
 	return ret;
 
 fail_free_cache_mem:
-	free(ret->cache);
+	stub_free(ret->cache,"ethash_light.cache");
 fail_free_light:
-	free(ret);
+	stub_free(ret,"ethash_light");
 	return NULL;
 }
 
@@ -344,9 +345,9 @@ ethash_light_t ethash_light_new(uint64_t block_number)
 void ethash_light_delete(ethash_light_t light)
 {
 	if (light->cache) {
-		free(light->cache);
+		stub_free(light->cache,"ethash_light.cache");
 	}
-	free(light);
+	stub_free(light,"ethash_light");
 }
 
 ethash_return_value_t ethash_light_compute_internal(
@@ -385,13 +386,14 @@ static bool ethash_mmap(struct ethash_full* ret, FILE* f)
 	if ((fd = ethash_fileno(ret->file)) == -1) {
 		return false;
 	}
-	mmapped_data= mmap(
+	mmapped_data= stub_mmap(
 		NULL,
 		(size_t)ret->file_size + ETHASH_DAG_MAGIC_NUM_SIZE,
 		PROT_READ | PROT_WRITE,
 		MAP_SHARED,
 		fd,
-		0
+		0,
+		"ethash_mmap"
 	);
 	if (mmapped_data == MAP_FAILED) {
 		return false;
@@ -410,7 +412,7 @@ ethash_full_t ethash_full_new_internal(
 {
 	struct ethash_full* ret;
 	FILE *f = NULL;
-	ret = calloc(sizeof(*ret), 1);
+	ret = stub_calloc(sizeof(*ret), 1,"ethash_full");
 	if (!ret) {
 		return NULL;
 	}
@@ -463,11 +465,11 @@ ethash_full_t ethash_full_new_internal(
 
 fail_free_full_data:
 	// could check that munmap(..) == 0 but even if it did not can't really do anything here
-	munmap(ret->data, (size_t)full_size);
+	stub_munmap(ret->data, (size_t)full_size,"ethash_full");
 fail_close_file:
 	fclose(ret->file);
 fail_free_full:
-	free(ret);
+	stub_free(ret,"ethash_full");
 	return NULL;
 }
 
@@ -485,11 +487,11 @@ ethash_full_t ethash_full_new(ethash_light_t light, ethash_callback_t callback)
 void ethash_full_delete(ethash_full_t full)
 {
 	// could check that munmap(..) == 0 but even if it did not can't really do anything here
-	munmap(full->data, (size_t)full->file_size);
+	stub_munmap(full->data, (size_t)full->file_size,"ethash_full");
 	if (full->file) {
 		fclose(full->file);
 	}
-	free(full);
+	stub_free(full,"ethash_full");
 }
 
 ethash_return_value_t ethash_full_compute(

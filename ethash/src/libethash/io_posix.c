@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include "stub.h"
 
 FILE* ethash_fopen(char const* file_name, char const* mode)
 {
@@ -61,7 +62,7 @@ char* ethash_io_create_filename(
 	if (dirname[dirlen] != '/') {
 		dest_size += 1;
 	}
-	char* name = malloc(dest_size);
+	char* name = stub_malloc(dest_size,"io_create_filename");
 	if (!name) {
 		return NULL;
 	}
