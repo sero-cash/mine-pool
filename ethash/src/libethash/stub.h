@@ -15,7 +15,7 @@ inline void* stub_calloc(size_t n, size_t size, const char* name) {
 
 inline void* stub_malloc(size_t size, const char* name) {
     printf("STUB MALLOC: %s\n", name);
-    return malloc(size,name);
+    return malloc(size);
 }
 
 inline void stub_free(void* ptr,const char* name) {

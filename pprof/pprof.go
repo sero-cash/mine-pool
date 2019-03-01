@@ -6,14 +6,13 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"runtime"
-	"runtime/debug"
 	"runtime/trace"
 )
 
-func Pprof() {
+func Pprof(port string) {
 	go func() {
 		//close GC
-		debug.SetGCPercent(-1)
+		//debug.SetGCPercent(1)
 		//run trace
 		http.HandleFunc("/start", traces)
 		//stop trace
@@ -21,7 +20,7 @@ func Pprof() {
 		//handle GC
 		http.HandleFunc("/gc", gc)
 		//open  http server
-		http.ListenAndServe(":6060", nil)
+		http.ListenAndServe(":"+port, nil)
 	}()
 }
 

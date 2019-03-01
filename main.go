@@ -79,12 +79,14 @@ func readConfig(cfg *proxy.Config) {
 }
 
 func main() {
-
 	cpt.ZeroInit_NoCircuit()
 
 	readConfig(&cfg)
 
-	go pprof.Pprof()
+	if cfg.Pprof {
+		log.Println("start pprof")
+		go pprof.Pprof(cfg.PprofPort)
+	}
 
 	rand.Seed(time.Now().UnixNano())
 

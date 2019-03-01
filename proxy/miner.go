@@ -43,6 +43,7 @@ func (s *ProxyServer) processShare(login, id, ip string, t *BlockTemplate, param
 	}
 
 	if !hasher.Verify(share) {
+		log.Printf("processShare hasher Verify failed %v@%v with %v", login, ip, id)
 		return false, false
 	}
 

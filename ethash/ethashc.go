@@ -34,6 +34,7 @@ package ethash
 #cgo LDFLAGS: -lm
 #cgo LDFLAGS: -L ../czero/lib -lczero
 
+
 #include "src/libethash/internal.c"
 
 #include "src/libethash/sha3.c"

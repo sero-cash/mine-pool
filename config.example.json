@@ -2,6 +2,8 @@
 	"threads": 2,
 	"coin": "sero",
 	"name": "main",
+	"pprof": false,
+	"pprofPort":"6060",
 
 	"proxy": {
 		"enabled": true,
