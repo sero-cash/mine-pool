@@ -10,6 +10,7 @@ import (
 )
 
 func Pprof(port string) {
+	runtime.MemProfileRate = 10 * 1024
 	go func() {
 		//close GC
 		//debug.SetGCPercent(1)
