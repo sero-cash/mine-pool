@@ -104,9 +104,9 @@ func freeCache(cache *cache) {
 }
 
 func (cache *cache) compute(dagSize uint64, hash common.Hash, nonce uint64, height uint64) (ok bool, mixDigest, result common.Hash) {
-	//ret := C.ethash_light_compute_internal(cache.ptr, C.uint64_t(dagSize), hashToH256(hash), C.uint64_t(nonce), C.uint64_t(height))
-	ret := C.ethash_light_compute_pool(cache.ptr, C.uint64_t(dagSize), hashToH256(hash), C.uint64_t(nonce), C.uint64_t(height))
-	defer C.ethash_delete_light_compute_return_value(ret)
+	ret := C.ethash_light_compute_internal(cache.ptr, C.uint64_t(dagSize), hashToH256(hash), C.uint64_t(nonce), C.uint64_t(height))
+	//ret := C.ethash_light_compute_pool(cache.ptr, C.uint64_t(dagSize), hashToH256(hash), C.uint64_t(nonce), C.uint64_t(height))
+	//defer C.ethash_delete_light_compute_return_value(ret)
 	// Make sure cache is live until after the C call.
 	// This is important because a GC might happen and execute
 	// the finalizer before the call completes.
