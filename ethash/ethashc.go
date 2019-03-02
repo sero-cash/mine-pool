@@ -41,6 +41,8 @@ package ethash
 
 #include "src/libethash/io.c"
 
+#include "src/libethash/stub.c"
+
 #ifdef _WIN32
 #	include "src/libethash/io_win32.c"
 #	include "src/libethash/mmap_win32.c"

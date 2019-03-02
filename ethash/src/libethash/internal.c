@@ -351,26 +351,6 @@ void ethash_light_delete(ethash_light_t light)
 }
 
 
-ethash_return_value_t* ethash_light_compute_pool(
-	ethash_light_t light,
-	uint64_t full_size,
-	ethash_h256_t const header_hash,
-	uint64_t nonce,
-	uint64_t height
-)
-{
-  	ethash_return_value_t* ret=stub_malloc(sizeof(ethash_return_value_t),"ethash_return_value_t");
-	ret->success = true;
-	if (!ethash_hash(ret, NULL, light, full_size, header_hash, nonce, height)) {
-		ret->success = false;
-	}
-	return ret;
-}
-
-void ethash_delete_light_compute_return_value(ethash_return_value_t* ret) {
-    stub_free(ret,"ethash_return_value_t");
-}
-
 ethash_return_value_t ethash_light_compute_internal(
 	ethash_light_t light,
 	uint64_t full_size,
