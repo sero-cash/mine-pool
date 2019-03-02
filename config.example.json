@@ -66,12 +66,12 @@
 		{
 			"name": "main",
 			"url": "http://127.0.0.1:8545",
-			"timeout": "10s"
+			"timeout": "15s"
 		},
 		{
 			"name": "backup",
 			"url": "http://127.0.0.2:8545",
-			"timeout": "10s"
+			"timeout": "15s"
 		}
 	],
 
@@ -100,7 +100,7 @@
 		"requirePeers": 10,
 		"interval": "12h",
 		"daemon": "http://127.0.0.1:8545",
-		"timeout": "120s",
+		"timeout": "3000s",
 		"address": "38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS",
 		"gas": "25000",
 		"gasPrice": "10000000000",
