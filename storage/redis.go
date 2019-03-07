@@ -595,6 +595,11 @@ func (r *RedisClient) GetMinerStats(login string, maxPayments int64) (map[string
 
 	return stats, nil
 }
+func (r *RedisClient) GetPayments(from, to string) []map[string]interface{} {
+	opt := redis.ZRangeByScore{Min: from, Max: to}
+	pays := r.client.ZRangeByScoreWithScores(r.formatKey("payments", "all"), opt)
+	return convertPaymentsResults(pays)
+}
 
 // Try to convert all numeric strings to int64
 func convertStringMap(m map[string]string) map[string]interface{} {

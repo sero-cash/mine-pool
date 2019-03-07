@@ -15,6 +15,12 @@
 			"revisionTime": "2019-02-17T15:38:49Z"
 		},
 		{
+			"checksumSHA1": "UpwKp6oFSNQbJTwaN3oRD/amXLI=",
+			"path": "github.com/tealeg/xlsx",
+			"revision": "dbf71b6a931e7096340690e009e40c914eb1fc3a",
+			"revisionTime": "2018-10-24T00:20:44Z"
+		},
+		{
 			"checksumSHA1": "suL7yZNBxN847Lmrt2bMIIwtJ4g=",
 			"path": "github.com/yvasiyarov/go-metrics",
 			"revision": "c25f46c4b94079672242ec48a545e7ca9ebe3aec",

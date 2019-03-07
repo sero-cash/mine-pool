@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"sort"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -26,6 +27,7 @@ type ApiConfig struct {
 	Blocks               int64  `json:"blocks"`
 	PurgeOnly            bool   `json:"purgeOnly"`
 	PurgeInterval        string `json:"purgeInterval"`
+	Sign                 string `json:"sign"`
 }
 
 type ApiServer struct {
@@ -107,6 +109,7 @@ func (s *ApiServer) listen() {
 	r.HandleFunc("/api/blocks", s.BlocksIndex)
 	r.HandleFunc("/api/payments", s.PaymentsIndex)
 	r.HandleFunc("/api/accounts/{login}", s.AccountIndex)
+	r.HandleFunc("/api/payments/download/{begin}/{end}", s.DowloadPayments)
 	r.NotFoundHandler = http.HandlerFunc(notFound)
 	err := http.ListenAndServe(s.config.Listen, r)
 	if err != nil {
@@ -299,6 +302,46 @@ func (s *ApiServer) AccountIndex(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Error serializing API response: ", err)
 	}
+}
+
+func (s *ApiServer) DowloadPayments(w http.ResponseWriter, r *http.Request) {
+	sign := r.URL.Query()["sign"][0]
+	if s.config.Sign != sign {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Invalid sign %s", sign)
+		return
+	}
+
+	begin := mux.Vars(r)["begin"]
+	end := mux.Vars(r)["end"]
+	beginUnix := util.GetBeginOfDay(begin)
+	endUnix := util.GetEndOfDay(end)
+	if beginUnix < 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Invalid begin %s", begin)
+		return
+	}
+	if endUnix < 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Invalid end %s", end)
+		return
+	}
+
+	if util.DaySub(begin, end) > 32 {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Invalid adress %s", sign)
+		return
+	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Content-Disposition", "attachment")
+	w.Header().Add("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+	beginUnixStr := strconv.FormatInt(util.GetBeginOfDay(begin), 10)
+	endUnixStr := strconv.FormatInt(util.GetEndOfDay(end), 10)
+	paymets := s.backend.GetPayments(beginUnixStr, endUnixStr)
+	util.WritePayments(paymets, w)
+	w.WriteHeader(http.StatusOK)
+
 }
 
 func (s *ApiServer) getStats() map[string]interface{} {

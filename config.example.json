@@ -58,7 +58,8 @@
 		"hashrateLargeWindow": "3h",
 		"luckWindow": [64, 128, 256],
 		"payments": 30,
-		"blocks": 50
+		"blocks": 50,
+		"sign":"ABC"
 	},
 
 	"upstreamCheckInterval": "5s",
@@ -103,8 +104,8 @@
 		"timeout": "3000s",
 		"address": "38FE3kWuF2zfvvqzS7ZqjYmcSsJdFBgDrxvd9K585fiiQ93j89GTRpN9ccfhER5iVXAkrK9opCnB9AMrJWdh8RwS",
 		"gas": "25000",
-		"gasPrice": "10000000000",
-		"autoGas": true,
+		"gasPrice": "1000000000",
+		"autoGas": false,
 		"threshold": 500000000,
 		"bgsave": false
 	},
