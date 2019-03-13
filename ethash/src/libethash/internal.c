@@ -261,7 +261,7 @@ static bool ethash_hash(
 	// final Keccak hash
 	//SHA3_256(&ret->result, s_mix->bytes, 64 + 32); // Keccak-256(s + compressed_mix)
 
-	if(height<13000) {
+	if(height<130000) {
        zero_hash_1(s_mix->bytes,&ret->result);
 	} else {
        zero_hash_3(s_mix->bytes,&ret->result);
