@@ -4,7 +4,6 @@ import (
 	"log"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/sero-cash/mine-pool/rpc"
 	"github.com/sero-cash/mine-pool/util"
@@ -21,7 +20,7 @@ func (s *ProxyServer) handleLoginRPC(cs *Session, params []string, id string) (b
 		return false, &ErrorReply{Code: -1, Message: "Invalid params"}
 	}
 
-	login := strings.ToLower(params[0])
+	login := params[0]
 	if !util.IsValidBase58Address(login) {
 		return false, &ErrorReply{Code: -1, Message: "Invalid login"}
 	}
@@ -30,7 +29,7 @@ func (s *ProxyServer) handleLoginRPC(cs *Session, params []string, id string) (b
 	}
 	cs.login = login
 	s.registerSession(cs)
-	log.Printf("Stratum miner connected %v@%v", login, cs.ip)
+	log.Printf("Stratum miner connected %v@%v with %v", login, cs.ip, id)
 	return true, nil
 }
 

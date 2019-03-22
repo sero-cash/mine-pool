@@ -12,8 +12,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/sero-cash/mine-pool/pprof"
-
 	"github.com/sero-cash/go-czero-import/cpt"
 
 	"github.com/yvasiyarov/gorelic"
@@ -82,11 +80,6 @@ func main() {
 	cpt.ZeroInit_NoCircuit()
 
 	readConfig(&cfg)
-
-	if cfg.Pprof {
-		log.Println("start pprof")
-		go pprof.Pprof(cfg.PprofPort)
-	}
 
 	rand.Seed(time.Now().UnixNano())
 

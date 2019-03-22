@@ -44,6 +44,16 @@
       cminer.exe -P {{config.HttpHost}}:{{config.HttpPort}}/&lt;address&gt;/&lt;worker&gt; --cpu=0
     </h4>
   </div>
+
+
+  <div>
+    <hr/>
+    <h4>推荐</h4>
+    <h4 class="note note-info text-center" style="word-break: break-all; white-space: normal;" >
+      cminer.exe -P stratum1+tcp://&lt;address&gt;.&lt;worker&gt; @{{config.StratumHost}}:{{config.StratumPort}} --cpu=0
+    </h4>
+  </div>
+
   <div class="alert alert-info" role="alert">
     Set --cpu=0, cminer will set the number of Mining Thread to the number of CPU Threads minus one.
   </div>

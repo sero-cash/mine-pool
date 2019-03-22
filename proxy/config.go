@@ -9,8 +9,6 @@ import (
 
 type Config struct {
 	Name                  string        `json:"name"`
-	Pprof                 bool          `json:"pprof"`
-	PprofPort             string        `json:"pprofPort"`
 	Proxy                 Proxy         `json:"proxy"`
 	Api                   api.ApiConfig `json:"api"`
 	Upstream              []Upstream    `json:"upstream"`

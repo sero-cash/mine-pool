@@ -107,7 +107,7 @@ func (cs *Session) handleTCPMessage(s *ProxyServer, req *StratumReq) error {
 		var params []string
 		err := json.Unmarshal(req.Params, &params)
 		if err != nil {
-			log.Println("Malformed stratum request params from", cs.ip)
+			log.Printf("Malformed stratum request params from %v,err:%v", cs.ip, err)
 			return err
 		}
 		reply, errReply := s.handleLoginRPC(cs, params, req.Worker)
