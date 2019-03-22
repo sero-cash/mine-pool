@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"strconv"
 	"time"
 
 	"github.com/sero-cash/mine-pool/util"
@@ -190,7 +191,7 @@ func (s *ProxyServer) broadcastNewJobs() {
 	if t == nil || len(t.Header) == 0 || s.isSick() {
 		return
 	}
-	reply := []string{t.Header, t.Seed, s.diff}
+	reply := []string{t.Header, t.Seed, s.diff, strconv.FormatUint(t.Height, 10)}
 
 	s.sessionsMu.RLock()
 	defer s.sessionsMu.RUnlock()
