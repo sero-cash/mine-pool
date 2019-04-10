@@ -19,11 +19,11 @@ var zeroHash = regexp.MustCompile("^0?x?0+$")
 
 func IsValidBase58Address(s string) bool {
 	address := common.Base58ToAddress(s)
-	flag, err := common.IsPkr(&address)
+	_, err := common.IsPkr(&address)
 	if err != nil {
 		return false
 	}
-	return flag
+	return true
 }
 
 func IsZeroHash(s string) bool {
