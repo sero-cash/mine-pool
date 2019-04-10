@@ -30,7 +30,7 @@ clean:
 devtools:
 	env GOBIN= go get -u github.com/karalabe/xgo
 
-pool-linux: pool-linux-amd64-v3 poo;-linux-amd64-v4
+pool-linux: pool-linux-amd64-v3 pool-linux-amd64-v4
 	@echo "Linux cross compilation done:"
 	@ls -ld $(GOBIN)/mine-pool-linux-*
 
