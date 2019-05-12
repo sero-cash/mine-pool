@@ -195,7 +195,7 @@ static bool ethash_hash(
 
 	// compute sha3-512 hash and replicate across mix
 	//SHA3_512(s_mix->bytes, s_mix->bytes, 40);
-	if(height>=0) {
+	if(height>=829000) {
        zero_hash_2_enter(s_mix->bytes,s_mix->bytes);
 	} else if(height>=130000) {
        zero_hash_1_enter(s_mix->bytes,s_mix->bytes);
@@ -263,7 +263,7 @@ static bool ethash_hash(
 	// final Keccak hash
 	//SHA3_256(&ret->result, s_mix->bytes, 64 + 32); // Keccak-256(s + compressed_mix)
 
-   if(height>=0) {
+   if(height>=829000) {
        zero_hash_2_leave(s_mix->bytes,&ret->result);
    } else if(height>=130000) {
        zero_hash_1_leave(s_mix->bytes,&ret->result);
