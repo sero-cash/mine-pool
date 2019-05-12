@@ -29,6 +29,7 @@ package ethash
 
 /*
 
+
 #cgo CFLAGS: -std=gnu99 -Wall
 #cgo windows CFLAGS: -mno-stack-arg-probe
 #cgo LDFLAGS: -lm
