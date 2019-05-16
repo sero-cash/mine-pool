@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/sero-cash/mine-pool/storage"
+
 	"github.com/sero-cash/mine-pool/rpc"
 	"github.com/sero-cash/mine-pool/util"
 )
@@ -68,15 +70,34 @@ func (s *ProxyServer) handleSubmitRPC(cs *Session, login, id string, params []st
 		log.Printf("Malformed PoW result from %s@%s %v", login, cs.ip, params)
 		return false, &ErrorReply{Code: -1, Message: "Malformed PoW result"}
 	}
+	if s.sessions[cs] != nil {
+		s.sessions[cs].Zero()
+		s.sessions[cs].Add(s.config.Proxy.Difficulty)
 
-	s.sessions[cs].Zero()
-	s.sessions[cs].Add(s.config.Proxy.Difficulty)
+		//log.Printf("%p  SESSION share from %s@%s with %v %v", cs, login, cs.ip, id, s.sessions[cs].HR())
+		if s.sessions[cs].HR() > 4000000 {
+			log.Printf("%p  conn biger than 4M from %s@%s with %v %v", cs, login, cs.ip, id, s.sessions[cs].HR())
+			return true, nil
 
-	//log.Printf("%p  SESSION share from %s@%s with %v %v", cs, login, cs.ip, id, s.sessions[cs].HR())
-	if s.sessions[cs].HR() > 4000000 {
-		log.Printf("%p  conn biger than 4M from %s@%s with %v %v", cs, login, cs.ip, id, s.sessions[cs].HR())
-		return true, nil
+		}
+	} else {
+		hashrateWindow := util.MustParseDuration(s.config.Api.HashrateWindow)
 
+		hashrateLargeWindow := util.MustParseDuration(s.config.Api.HashrateLargeWindow)
+
+		workersStats, err := s.backend.CollectWorkersStats(hashrateWindow, hashrateLargeWindow, login)
+		if err != nil {
+			return true, &ErrorReply{Code: -1, Message: "High rate of invalid shares"}
+		}
+		if workers, ok := workersStats["workers"]; ok {
+
+			if work, ok := workers.(map[string]storage.Worker)[id]; ok {
+				if work.HR > 4000000 {
+					log.Printf("more than 4M from %s@%s with %v %v", login, cs.ip, id, work.HR)
+					return true, nil
+				}
+			}
+		}
 	}
 
 	t := s.currentBlockTemplate()
