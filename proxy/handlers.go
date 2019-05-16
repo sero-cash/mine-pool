@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/sero-cash/mine-pool/storage"
+
 	"github.com/sero-cash/mine-pool/rpc"
 	"github.com/sero-cash/mine-pool/util"
 )
@@ -68,6 +70,29 @@ func (s *ProxyServer) handleSubmitRPC(cs *Session, login, id string, params []st
 		log.Printf("Malformed PoW result from %s@%s %v", login, cs.ip, params)
 		return false, &ErrorReply{Code: -1, Message: "Malformed PoW result"}
 	}
+	hashrateWindow := util.MustParseDuration(s.config.Api.HashrateWindow)
+
+	hashrateLargeWindow := util.MustParseDuration(s.config.Api.HashrateLargeWindow)
+
+	workersStats, err := s.backend.CollectWorkersStats(hashrateWindow, hashrateLargeWindow, login)
+	if err != nil {
+		return true, &ErrorReply{Code: -1, Message: "High rate of invalid shares"}
+	}
+	if workers, ok := workersStats["workers"]; ok {
+
+		if work, ok := workers.(map[string]storage.Worker)[id]; ok {
+
+			if work.HR > 10000000 {
+				log.Printf("too much hr 10000000 from %s@%s with %v %v", login, cs.ip, id, params)
+				return true, &ErrorReply{Code: -1, Message: "High rate of invalid shares"}
+			}
+			if work.HR > 5000000 {
+				log.Printf("too much hr 6000000 share from %s@%s with %v %v", login, cs.ip, id, params)
+				return false, &ErrorReply{Code: 23, Message: "Invalid share"}
+			}
+		}
+	}
+
 	t := s.currentBlockTemplate()
 	exist, validShare := s.processShare(login, id, cs.ip, t, params)
 	ok := s.policy.ApplySharePolicy(cs.ip, !exist && validShare)
