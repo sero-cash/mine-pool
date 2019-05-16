@@ -177,7 +177,7 @@ func (self *ProxyServer) setDeadline(conn *net.TCPConn) {
 func (s *ProxyServer) registerSession(cs *Session) {
 	s.sessionsMu.Lock()
 	defer s.sessionsMu.Unlock()
-	s.sessions[cs] = struct{}{}
+	s.sessions[cs] = NewCSHashrate()
 }
 
 func (s *ProxyServer) removeSession(cs *Session) {

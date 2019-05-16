@@ -32,8 +32,42 @@ type ProxyServer struct {
 
 	// Stratum
 	sessionsMu sync.RWMutex
-	sessions   map[*Session]struct{}
+	sessions   map[*Session]*CSHashrate
 	timeout    time.Duration
+}
+
+type CSHashrate struct {
+	StartAt int64
+	Td      int64
+}
+
+func (cshr *CSHashrate) Add(td int64) {
+	atomic.AddInt64(&cshr.Td, td)
+}
+func (cshr *CSHashrate) Zero() {
+	now := util.MakeTimestamp() / 1000
+	duration := now - cshr.StartAt
+	if duration > 60*60 {
+		atomic.StoreInt64(&cshr.StartAt, now)
+		atomic.StoreInt64(&cshr.Td, 0)
+	}
+}
+
+func NewCSHashrate() *CSHashrate {
+	return &CSHashrate{
+		StartAt: util.MakeTimestamp() / 1000,
+		Td:      0,
+	}
+
+}
+
+func (cshr CSHashrate) HR() int64 {
+	now := util.MakeTimestamp() / 1000
+	duration := now - cshr.StartAt
+	if duration < 600 {
+		duration = 600
+	}
+	return cshr.Td / duration
 }
 
 type Session struct {
@@ -64,7 +98,7 @@ func NewProxy(cfg *Config, backend *storage.RedisClient) *ProxyServer {
 	log.Printf("Default upstream: %s => %s", proxy.rpc().Name, proxy.rpc().Url)
 
 	if cfg.Proxy.Stratum.Enabled {
-		proxy.sessions = make(map[*Session]struct{})
+		proxy.sessions = make(map[*Session]*CSHashrate)
 		go proxy.ListenTCP()
 	}
 
