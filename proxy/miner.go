@@ -7,10 +7,11 @@ import (
 	"strings"
 
 	"github.com/sero-cash/go-sero/common"
-	"github.com/sero-cash/mine-pool/ethash"
+	"github.com/sero-cash/mine-pool/progpow_go"
 )
 
-var hasher = ethash.New()
+//var hasher = ethash.New()
+var hasher = progpow_go.New()
 
 func (s *ProxyServer) processShare(login, id, ip string, t *BlockTemplate, params []string) (bool, bool) {
 	nonceHex := params[0]
