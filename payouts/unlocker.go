@@ -2,12 +2,13 @@ package payouts
 
 import (
 	"fmt"
-	"github.com/sero-cash/go-czero-import/cpt"
 	"log"
 	"math/big"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/sero-cash/go-czero-import/seroparam"
 
 	"github.com/sero-cash/mine-pool/rpc"
 	"github.com/sero-cash/mine-pool/storage"
@@ -468,13 +469,13 @@ var (
 	lReward = new(big.Int).Mul(big.NewInt(176), base)
 	hReward = new(big.Int).Mul(big.NewInt(445), base)
 
-	argA, _ = new(big.Int).SetString("2022556390977440", 10)
-	argB, _ = new(big.Int).SetString("16184210526315800000", 10)
+	argA, _ = new(big.Int).SetString("985347985347985", 10)
+	argB, _ = new(big.Int).SetString("16910256410256400000", 10)
 )
 
 func getConstReward(Number, Difficulty *big.Int) *big.Int {
 
-	if Number.Cmp(big.NewInt(cpt.SIP3)) >= 0 {
+	if Number.Cmp(big.NewInt(seroparam.SIP3)) >= 0 {
 		return getConstRewardv3(Number, Difficulty)
 	} else {
 		return getConstRewardv2(Number, Difficulty)
