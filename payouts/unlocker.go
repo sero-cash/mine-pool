@@ -2,6 +2,7 @@ package payouts
 
 import (
 	"fmt"
+	"github.com/sero-cash/go-czero-import/cpt"
 	"log"
 	"math/big"
 	"strconv"
@@ -463,9 +464,27 @@ var (
 	difficultyL2 = big.NewInt(1700000000)
 	difficultyL3 = big.NewInt(4000000000)
 	difficultyL4 = big.NewInt(17000000000)
+
+	lReward = new(big.Int).Mul(big.NewInt(220), base)
+	hReward = new(big.Int).Mul(big.NewInt(445), base)
+
+	difficultyL5, _ = new(big.Int).SetString("", 10)
+	difficultyL6, _ = new(big.Int).SetString("", 10)
+
+	argA, _ = new(big.Int).SetString("828424153166421", 10)
+	argB, _ = new(big.Int).SetString("21304123711340200000", 10)
 )
 
 func getConstReward(Number, Difficulty *big.Int) *big.Int {
+
+	if Number.Cmp(big.NewInt(cpt.SIP3)) >= 0 {
+		return getConstRewardv3(Number, Difficulty)
+	} else {
+		return getConstRewardv2(Number, Difficulty)
+	}
+}
+
+func getConstRewardv2(Number, Difficulty *big.Int) *big.Int {
 	rewardStd := new(big.Int).Set(oriReward)
 	if Number.Uint64() >= halveNimber.Uint64() {
 		i := new(big.Int).Add(new(big.Int).Div(new(big.Int).Sub(Number, halveNimber), interval), big1)
@@ -487,5 +506,21 @@ func getConstReward(Number, Difficulty *big.Int) *big.Int {
 	} else {
 		reward = rewardStd
 	}
+	return reward
+}
+
+func getConstRewardv3(Number, Difficulty *big.Int) *big.Int {
+	diff := new(big.Int).Div(Difficulty, big.NewInt(1000000000))
+	reward := new(big.Int).Add(new(big.Int).Mul(argA, diff), argB)
+
+	if reward.Cmp(lReward) < 0 {
+		reward = new(big.Int).Set(lReward)
+	} else if reward.Cmp(hReward) > 0 {
+		reward = new(big.Int).Set(hReward)
+	}
+
+	i := new(big.Int).Add(new(big.Int).Div(new(big.Int).Sub(Number, halveNimber), interval), big1)
+	reward.Div(reward, new(big.Int).Exp(big2, i, nil))
+
 	return reward
 }
