@@ -23,8 +23,6 @@ import (
 	"runtime"
 
 	"github.com/sero-cash/go-czero-import/seroparam"
-
-	"github.com/sero-cash/mine-pool/ethash"
 )
 
 // Various error messages to mark blocks invalid. These should be private to
@@ -39,7 +37,7 @@ var (
 
 // VerifySeal implements consensus.Engine, checking whether the given block satisfies
 // the PoW difficulty requirements.
-func (ethash *Ethash) Verify(block ethash.Block) bool {
+func (ethash *Ethash) Verify(block Block) bool {
 	// Ensure that we have a valid difficulty for the block
 	if block.Difficulty().Sign() <= 0 {
 		return false
