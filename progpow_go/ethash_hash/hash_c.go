@@ -29,7 +29,7 @@ func Miner_Hash_0(in []byte, num uint64) []byte {
 	C.hash_enter(
 		(*C.uchar)(unsafe.Pointer(&bs[0])),
 		(*C.uchar)(unsafe.Pointer(&in[0])),
-		C.ulonglong(num),
+		C.ulong(num),
 	)
 	return bs[:]
 }
@@ -39,7 +39,7 @@ func Miner_Hash_1(in []byte, num uint64) []byte {
 	C.hash_leave(
 		(*C.uchar)(unsafe.Pointer(&bs[0])),
 		(*C.uchar)(unsafe.Pointer(&in[0])),
-		C.ulonglong(num),
+		C.ulong(num),
 	)
 	return bs[:]
 }
