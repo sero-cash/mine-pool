@@ -19,13 +19,11 @@ package progpow_go
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"math/big"
 	"runtime"
 
 	"github.com/sero-cash/go-czero-import/seroparam"
 
-	"github.com/sero-cash/go-sero/common/hexutil"
 	"github.com/sero-cash/mine-pool/ethash"
 )
 
@@ -61,13 +59,6 @@ func (ethash *Ethash) Verify(block ethash.Block) bool {
 		} else {
 			digest, result = progpowLightWithoutCDag(size, cache.cache, block.HashNoNonce().Bytes(), block.Nonce(), number)
 		}
-		fmt.Printf(
-			"header:%v ,nonce:%v ,number:%v ,digest:%v \n",
-			hexutil.Encode(block.HashNoNonce().Bytes()),
-			block.Nonce(),
-			number,
-			hexutil.Encode(digest),
-		)
 	} else {
 		digest, result = hashimotoLight(size, cache.cache, block.HashNoNonce().Bytes(), block.Nonce(), number)
 	}
