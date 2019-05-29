@@ -15,7 +15,7 @@ import (
 	"github.com/sero-cash/mine-pool/util"
 )
 
-const txCheckInterval = 200 * time.Second
+const txCheckInterval = 300 * time.Second
 
 type PayoutsConfig struct {
 	Enabled      bool   `json:"enabled"`
