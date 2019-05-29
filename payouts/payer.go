@@ -198,7 +198,7 @@ func (u *PayoutsProcessor) process() {
 		// Wait for TX confirmation before further payouts
 		for {
 			log.Printf("Waiting for tx confirmation: %v", txHash)
-			time.Sleep(txCheckInterval)
+			time.Sleep(5 * time.Second)
 			receipt, err := u.rpc.GetTxReceipt(txHash)
 			if err != nil {
 				log.Printf("Failed to get tx receipt for %v: %v", txHash, err)
@@ -211,9 +211,11 @@ func (u *PayoutsProcessor) process() {
 				} else {
 					log.Printf("Payout tx failed for %s: %s. Address contract throws on incoming tx.", login, txHash)
 				}
+				time.Sleep(txCheckInterval)
 				break
 			}
 		}
+
 	}
 
 	if mustPay > 0 {
