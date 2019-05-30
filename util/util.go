@@ -20,14 +20,18 @@ var pow256 = math.BigPow(2, 256)
 var zeroHash = regexp.MustCompile("^0?x?0+$")
 
 func IsValidBase58Address(s string) bool {
+	fmt.Println(s)
 	address := common.Base58ToAddress(s)
 	flag, err := common.IsPkr(&address)
 	if err != nil {
+		fmt.Println(s + ":0")
 		return false
 	}
 	if !flag {
+		fmt.Println(s + ":1")
 		return keys.IsPKValid(address.ToUint512())
 	}
+	fmt.Println(s + ":2")
 	return true
 }
 
