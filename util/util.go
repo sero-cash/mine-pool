@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/sero-cash/go-czero-import/keys"
+
 	"github.com/sero-cash/go-sero/common"
 	"github.com/sero-cash/go-sero/common/math"
 )
@@ -19,9 +21,12 @@ var zeroHash = regexp.MustCompile("^0?x?0+$")
 
 func IsValidBase58Address(s string) bool {
 	address := common.Base58ToAddress(s)
-	_, err := common.IsPkr(&address)
+	flag, err := common.IsPkr(&address)
 	if err != nil {
 		return false
+	}
+	if !flag {
+		return keys.IsPKValid(address.ToUint512())
 	}
 	return true
 }
