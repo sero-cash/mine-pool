@@ -16,7 +16,7 @@ import (
 )
 
 const txCheckInterval = 300 * time.Second
-const confireBlocks = 13
+const confireBlocks = 16
 
 type PayoutsConfig struct {
 	Enabled      bool   `json:"enabled"`
@@ -222,7 +222,7 @@ func (u *PayoutsProcessor) process() {
 				txBlockNumber := hexToInt64(receipt.BlockNumber)
 				currentBlockNumber, _ := u.rpc.GetBlockNumber()
 				for currentBlockNumber < txBlockNumber+confireBlocks {
-					time.Sleep(10 * time.Second)
+					time.Sleep(13 * time.Second)
 					currentBlockNumber, _ = u.rpc.GetBlockNumber()
 					log.Printf("%v Waiting for balance confirmation: txblockNumber %v,currentBlockNumber %v", txHash, txBlockNumber, currentBlockNumber)
 				}
