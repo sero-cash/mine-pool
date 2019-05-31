@@ -49,10 +49,11 @@ type GetBlockReplyPart struct {
 const receiptStatusSuccessful = "0x1"
 
 type TxReceipt struct {
-	TxHash    string `json:"transactionHash"`
-	GasUsed   string `json:"gasUsed"`
-	BlockHash string `json:"blockHash"`
-	Status    string `json:"status"`
+	TxHash      string `json:"transactionHash"`
+	BlockNumber string `json:"blockNumber"`
+	GasUsed     string `json:"gasUsed"`
+	BlockHash   string `json:"blockHash"`
+	Status      string `json:"status"`
 }
 
 func (r *TxReceipt) Confirmed() bool {
@@ -96,6 +97,19 @@ func (r *RPCClient) GetWork() ([]string, error) {
 	var reply []string
 	err = json.Unmarshal(*rpcResp.Result, &reply)
 	return reply, err
+}
+
+func (r *RPCClient) GetBlockNumber() (int64, error) {
+	rpcResp, err := r.doPost(r.Url, "sero_blockNumber", nil)
+	if err != nil {
+		return 0, err
+	}
+	var reply string
+	err = json.Unmarshal(*rpcResp.Result, &reply)
+	if err != nil {
+		return 0, err
+	}
+	return strconv.ParseInt(strings.Replace(reply, "0x", "", -1), 16, 64)
 }
 
 func (r *RPCClient) GetPendingBlock() (*GetBlockReplyPart, error) {

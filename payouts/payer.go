@@ -16,6 +16,7 @@ import (
 )
 
 const txCheckInterval = 300 * time.Second
+const confireBlocks = 16
 
 type PayoutsConfig struct {
 	Enabled      bool   `json:"enabled"`
@@ -100,6 +101,13 @@ func (u *PayoutsProcessor) Start() {
 			}
 		}
 	}()
+}
+
+func hexToInt64(hex string) int64 {
+	n := new(big.Int)
+	n, _ = n.SetString(hex[2:], 16)
+
+	return n.Int64()
 }
 
 func (u *PayoutsProcessor) process() {
@@ -211,7 +219,13 @@ func (u *PayoutsProcessor) process() {
 				} else {
 					log.Printf("Payout tx failed for %s: %s. Address contract throws on incoming tx.", login, txHash)
 				}
-				time.Sleep(txCheckInterval)
+				txBlockNumber := hexToInt64(receipt.BlockNumber)
+				currentBlockNumber, _ := u.rpc.GetBlockNumber()
+				for currentBlockNumber < txBlockNumber+confireBlocks {
+					time.Sleep(5 * time.Second)
+					currentBlockNumber, _ = u.rpc.GetBlockNumber()
+					log.Printf("Waiting for balance confirmation: %v", txHash)
+				}
 				break
 			}
 		}
