@@ -475,7 +475,7 @@ var (
 
 func getConstReward(Number, Difficulty *big.Int) *big.Int {
 
-	if Number.Cmp(big.NewInt(seroparam.SIP3)) >= 0 {
+	if Number.Cmp(big.NewInt(int64(seroparam.SIP3()))) >= 0 {
 		return getConstRewardv3(Number, Difficulty)
 	} else {
 		return getConstRewardv2(Number, Difficulty)
