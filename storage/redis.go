@@ -446,6 +446,25 @@ func (r *RedisClient) WritePayment(login, txHash string, amount int64) error {
 	return err
 }
 
+func (r *RedisClient) WriteExchangePayment(login, txHash string, amount int64) error {
+	tx := r.client.Multi()
+	defer tx.Close()
+
+	ts := util.MakeTimestamp() / 1000
+
+	_, err := tx.Exec(func() error {
+		tx.HIncrBy(r.formatKey("miners", login), "pending", (amount * -1))
+		tx.HIncrBy(r.formatKey("miners", login), "paid", amount)
+		tx.HIncrBy(r.formatKey("finances"), "pending", (amount * -1))
+		tx.HIncrBy(r.formatKey("finances"), "paid", amount)
+		tx.ZAdd(r.formatKey("payments", "all"), redis.Z{Score: float64(ts), Member: join(txHash, login, amount)})
+		tx.ZAdd(r.formatKey("payments", login), redis.Z{Score: float64(ts), Member: join(txHash, amount)})
+		tx.ZRem(r.formatKey("payments", "pending"), join(login, amount))
+		return nil
+	})
+	return err
+}
+
 func (r *RedisClient) WriteImmatureBlock(block *BlockData, roundRewards map[string]int64) error {
 	tx := r.client.Multi()
 	defer tx.Close()

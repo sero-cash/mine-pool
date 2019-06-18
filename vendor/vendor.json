@@ -3,6 +3,12 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "oQgLy8KmIOVov04WXH7KgU1bszc=",
+			"path": "github.com/btcsuite/btcutil/base58",
+			"revision": "9e5f4b9a998d263e3ce9c56664a7816001ac8000",
+			"revisionTime": "2019-04-25T00:47:09Z"
+		},
+		{
 			"checksumSHA1": "oHwfghigjTz8Xs+ssxwdl/atb44=",
 			"path": "github.com/gorilla/context",
 			"revision": "51ce91d2eaddeca0ef29a71d766bb3634dadf729",

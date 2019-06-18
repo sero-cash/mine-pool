@@ -244,6 +244,177 @@ func (u *PayoutsProcessor) process() {
 	}
 }
 
+func (u *PayoutsProcessor) exhcange_process() {
+	if u.halt {
+		log.Println("payments suspended due to last critical error:", u.lastFail)
+		return
+	}
+	_, currentBlock, hightBlock, pkBlock, err := u.rpc.GetPkSynced(u.config.Address)
+	if hightBlock < currentBlock {
+		log.Println("payments suspended due to block syncing:", currentBlock, hightBlock)
+		return
+	}
+	if pkBlock+128 < currentBlock {
+		log.Println("payments suspended due to balance syncing:", currentBlock, pkBlock)
+		return
+	}
+	mustPay := 0
+	minersPaid := 0
+	totalAmount := big.NewInt(0)
+	payees, err := u.backend.GetPayees()
+	if err != nil {
+		log.Println("Error while retrieving payees from backend:", err)
+		return
+	}
+	if !u.checkPeers() {
+		log.Println("gero peer not enough!")
+		return
+	}
+
+	// Require unlocked account
+	if !u.isUnlockedAccount() {
+		log.Println("payment account is locked!")
+		return
+	}
+	mustPayLogins := map[string]*big.Int{}
+	mustPayAmount := big.NewInt(0)
+	count := len(payees)
+	batchSize := 100
+
+pays:
+	for i, login := range payees {
+		amount, _ := u.backend.GetBalance(login)
+		amountInShannon := big.NewInt(amount)
+		// Shannon^2 = Wei
+		amountInWei := new(big.Int).Mul(amountInShannon, util.Shannon)
+
+		if !u.reachedThreshold(amountInShannon) {
+			log.Printf("%v ammount %d not reach threshold", login, amountInShannon)
+			continue
+		}
+		mustPay++
+		mustPayLogins[login] = amountInWei
+		mustPayAmount = mustPayAmount.Add(mustPayAmount, amountInWei)
+
+		// Require active peers before processing
+		if !u.checkPeers() {
+			break
+		}
+		// Require unlocked account
+		if !u.isUnlockedAccount() {
+			break
+		}
+
+		// Debit miner's balance and update stats
+		err = u.backend.UpdateBalance(login, amount)
+		if err != nil {
+			log.Printf("Failed to update balance for %s, %v Shannon: %v", login, amount, err)
+			u.halt = true
+			u.lastFail = err
+			break
+		}
+		totalAmount.Add(totalAmount, big.NewInt(amount))
+		if mustPay == batchSize || (i == count-1) {
+
+			mustPayShannonAmount := new(big.Int).Div(mustPayAmount, util.Shannon).Int64()
+			// Lock payments for current payout
+			err = u.backend.LockPayouts("exchange_paying", mustPayShannonAmount)
+			if err != nil {
+				log.Printf("Failed to lock payment for %s: %v", "exchange_paying", err)
+				u.halt = true
+				u.lastFail = err
+				break
+			}
+			log.Printf("Locked payment for %s, %v Shannon", mustPayLogins, mustPayShannonAmount)
+
+			// Check if we have enough funds
+			poolBalance, err := u.rpc.GetBalance(u.config.Address)
+			if err != nil {
+				u.halt = true
+				u.lastFail = err
+				break
+			}
+			if poolBalance.Cmp(mustPayAmount) < 0 {
+				err := fmt.Errorf("Not enough balance for payment, need %s Wei, pool has %s Wei",
+					amountInWei.String(), poolBalance.String())
+				u.halt = true
+				u.lastFail = err
+				break
+			}
+			minersPaid += mustPay
+			txHash, err := u.rpc.SendExchangeTransactions(u.config.Address, 25000, 1000000000, mustPayLogins)
+			if err != nil {
+				log.Printf("Failed to send payment to %v, %v Shannon:%v.",
+					mustPayLogins, totalAmount, err)
+				u.halt = true
+				u.lastFail = err
+				break
+			}
+			for p, a := range mustPayLogins {
+				ammountInshannon := new(big.Int).Div(a, util.Shannon).Int64()
+				err = u.backend.WriteExchangePayment(p, txHash, ammountInshannon)
+				if err != nil {
+					log.Printf("Failed to log payment data for %s, %v Shannon, tx: %s: %v", a, ammountInshannon, txHash, err)
+					u.halt = true
+					u.lastFail = err
+					break
+					break pays
+				}
+				log.Printf("Paid %v Shannon to %v, TxHash: %v", a, p, txHash)
+			}
+			err = u.backend.UnlockPayouts()
+			if err != nil {
+				log.Printf("Failed to  unlock payouts")
+				u.halt = true
+				u.lastFail = err
+				break
+			}
+
+			// Wait for TX confirmation before further payouts
+			for {
+				log.Printf("Waiting for tx confirmation: %v", txHash)
+				time.Sleep(5 * time.Second)
+				receipt, err := u.rpc.GetTxReceipt(txHash)
+				if err != nil {
+					log.Printf("Failed to get tx receipt for %v: %v", txHash, err)
+					continue
+				}
+				// Tx has been mined
+				if receipt != nil && receipt.Confirmed() {
+					if receipt.Successful() {
+						log.Printf("Payout tx successful for %s: %s", login, txHash)
+					} else {
+						log.Printf("Payout tx failed for %s: %s. Address contract throws on incoming tx.", login, txHash)
+					}
+					txBlockNumber := hexToInt64(receipt.BlockNumber)
+					canNext, _ := u.rpc.CanTx(u.config.Address, uint64(txBlockNumber))
+					for !canNext {
+						time.Sleep(5 * time.Second)
+						canNext, _ = u.rpc.CanTx(u.config.Address, uint64(txBlockNumber))
+						log.Printf("Waiting for balance confirmation: %v", txHash)
+					}
+					break
+				}
+			}
+			mustPay = 0
+			mustPayLogins = map[string]*big.Int{}
+			mustPayAmount = big.NewInt(0)
+
+		}
+	}
+
+	if mustPay > 0 {
+		log.Printf("Paid total %v Shannon to %v of %v payees", totalAmount, minersPaid, mustPay)
+	} else {
+		log.Println("No payees that have reached payout threshold")
+	}
+
+	// Save redis state to disk
+	if minersPaid > 0 && u.config.BgSave {
+		u.bgSave()
+	}
+}
+
 func (self PayoutsProcessor) isUnlockedAccount() bool {
 	reply, err := self.rpc.AddressUnlocked(self.config.Address)
 	if err != nil {

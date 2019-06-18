@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/btcsuite/btcutil/base58"
+
 	"github.com/sero-cash/go-sero/common"
 	"github.com/sero-cash/go-sero/common/hexutil"
 
@@ -251,6 +253,138 @@ func (r *RPCClient) SendTransaction(from, to, gas, gasPrice, value string, autoG
 		err = errors.New("transaction is not yet available")
 	}
 	return reply, err
+}
+
+type ReceptionArgs struct {
+	Addr     string
+	Currency string
+	Value    uint64
+}
+
+type GenTxArgs struct {
+	From       string
+	Receptions []ReceptionArgs
+	Gas        uint64
+	GasPrice   uint64
+	Roots      []hexutil.Bytes
+}
+
+type GTx struct {
+	Hash hexutil.Bytes
+}
+
+func base58ToHex(bs string) string {
+
+	return hexutil.Encode(base58.Decode(bs))
+
+}
+
+func (r *RPCClient) SendExchangeTransactions(from string, gas uint64, gasPrice uint64, pays map[string]*big.Int) (string, error) {
+	fromAddress := base58ToHex(from)
+	receptions := []ReceptionArgs{}
+	for k, v := range pays {
+		receptions = append(receptions, ReceptionArgs{
+			Addr:     base58ToHex(k),
+			Currency: "SERO",
+			Value:    v.Uint64(),
+		})
+	}
+	args := GenTxArgs{
+		fromAddress,
+		receptions, gas, gasPrice, []hexutil.Bytes{},
+	}
+
+	rpcResp, err := r.doPost(r.Url, "exchange_genTxWithSign", []interface{}{args})
+	if err != nil {
+		return "", err
+	}
+	var gtx GTx
+	err = json.Unmarshal(*rpcResp.Result, &gtx)
+
+	if err != nil {
+		return "", err
+	}
+	_, err = r.doPost(r.Url, "exchange_commitTx", []interface{}{*rpcResp.Result})
+	if err != nil {
+		return "", err
+	}
+
+	return hexutil.Encode(gtx.Hash), err
+}
+
+func (r *RPCClient) GetPkSynced(from string) (uint64, uint64, uint64, uint64, error) {
+	fromAddress := base58ToHex(from)
+	rpcResp, err := r.doPost(r.Url, "exchange_getPkSynced", []interface{}{fromAddress})
+	if err != nil {
+		return 0, 0, 0, 0, err
+	}
+	result := map[string]interface{}{}
+	err = json.Unmarshal(*rpcResp.Result, &result)
+	if err != nil {
+		return 0, 0, 0, 0, err
+	}
+
+	var confirmBlock, currentBlock, hightBlock, pkBlock uint64
+	for k, v := range result {
+		if k == "confirmedBlock" {
+			confirmBlock = v.(uint64)
+		}
+		if k == "currentBlock" {
+			currentBlock = v.(uint64)
+		}
+		if k == "highestBlock" {
+			hightBlock = v.(uint64)
+		}
+		if k == "currentPKBlock" {
+			pkBlock = v.(uint64)
+		}
+	}
+	return confirmBlock, currentBlock, hightBlock, pkBlock, nil
+}
+
+func (r *RPCClient) CanTx(from string, lastTxBlock uint64) (bool, error) {
+	fromAddress := base58ToHex(from)
+	rpcResp, err := r.doPost(r.Url, "exchange_getPkSynced", []interface{}{fromAddress})
+	if err != nil {
+		return false, err
+	}
+	result := map[string]interface{}{}
+	err = json.Unmarshal(*rpcResp.Result, &result)
+	if err != nil {
+		return false, err
+	}
+
+	var confirmBlock, currentBlock, hightBlock, pkBlock uint64
+	for k, v := range result {
+		if k == "confirmedBlock" {
+			confirmBlock = v.(uint64)
+		}
+		if k == "currentBlock" {
+			currentBlock = v.(uint64)
+		}
+		if k == "highestBlock" {
+			hightBlock = v.(uint64)
+		}
+		if k == "currentPKBlock" {
+			pkBlock = v.(uint64)
+		}
+	}
+	if currentBlock == hightBlock && confirmBlock+pkBlock+128 >= currentBlock {
+		if currentBlock > lastTxBlock+confirmBlock {
+			if pkBlock > lastTxBlock {
+				return true, nil
+			} else {
+				return false, errors.New("Account balance is confirming")
+			}
+
+		} else {
+			return false, errors.New("Account is confirming")
+		}
+
+	} else {
+		return false, errors.New("Account is syncing")
+	}
+
 }
 
 func (r *RPCClient) doPost(url string, method string, params interface{}) (*JSONRpcResp, error) {
