@@ -279,6 +279,64 @@ func base58ToHex(bs string) string {
 
 }
 
+func (r *RPCClient) GetMaxAvailable(address string) (*big.Int, error) {
+	hexAddress := base58ToHex(address)
+	rpcResp, err := r.doPost(r.Url, "exchange_getMaxAvailable", []string{hexAddress, "SERO"})
+	if err != nil {
+		return nil, err
+	}
+	var reply *big.Int
+	err = json.Unmarshal(*rpcResp.Result, &reply)
+	if err != nil {
+		return nil, err
+	}
+	return reply, err
+}
+
+func (r *RPCClient) ClearExchange(addres string) error {
+	_, err := r.doPost(r.Url, "exchange_clearUsedFlag", []string{base58ToHex(addres)})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *RPCClient) GenTxWithSign(from string, gas uint64, gasPrice uint64, pays map[string]*big.Int) (*json.RawMessage, string, error) {
+	fromAddress := base58ToHex(from)
+	receptions := []ReceptionArgs{}
+	for k, v := range pays {
+		receptions = append(receptions, ReceptionArgs{
+			Addr:     base58ToHex(k),
+			Currency: "SERO",
+			Value:    v.Uint64(),
+		})
+	}
+	args := GenTxArgs{
+		fromAddress,
+		receptions, gas, gasPrice, []hexutil.Bytes{},
+	}
+	rpcResp, err := r.doPost(r.Url, "exchange_genTxWithSign", []interface{}{args})
+	if err != nil {
+		return nil, "", err
+	}
+	var gtx GTx
+	err = json.Unmarshal(*rpcResp.Result, &gtx)
+
+	if err != nil {
+		return nil, "", err
+	}
+	return rpcResp.Result, hexutil.Encode(gtx.Hash), nil
+
+}
+func (r *RPCClient) CommitTx(data *json.RawMessage, txhash string) error {
+
+	_, err := r.doPost(r.Url, "exchange_commitTx", []interface{}{*data})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *RPCClient) SendExchangeTransactions(from string, gas uint64, gasPrice uint64, pays map[string]*big.Int) (string, error) {
 	fromAddress := base58ToHex(from)
 	receptions := []ReceptionArgs{}

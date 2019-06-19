@@ -376,6 +376,7 @@ type PendingPayment struct {
 	Timestamp int64  `json:"timestamp"`
 	Amount    int64  `json:"amount"`
 	Address   string `json:"login"`
+	TxHash    string `json:"txhash"`
 }
 
 func (r *RedisClient) GetPendingPayments() []*PendingPayment {
@@ -388,6 +389,22 @@ func (r *RedisClient) GetPendingPayments() []*PendingPayment {
 		fields := strings.Split(v.Member.(string), ":")
 		payment.Address = fields[0]
 		payment.Amount, _ = strconv.ParseInt(fields[1], 10, 64)
+		result = append(result, &payment)
+	}
+	return result
+}
+
+func (r *RedisClient) GetPendingExchangePayments() []*PendingPayment {
+	raw := r.client.ZRevRangeWithScores(r.formatKey("payments", "pending"), 0, -1)
+	var result []*PendingPayment
+	for _, v := range raw.Val() {
+		// timestamp -> "address:amount"
+		payment := PendingPayment{}
+		payment.Timestamp = int64(v.Score)
+		fields := strings.Split(v.Member.(string), ":")
+		payment.Address = fields[0]
+		payment.Amount, _ = strconv.ParseInt(fields[1], 10, 64)
+		payment.TxHash = fields[2]
 		result = append(result, &payment)
 	}
 	return result
@@ -421,6 +438,38 @@ func (r *RedisClient) RollbackBalance(login string, amount int64) error {
 		tx.HIncrBy(r.formatKey("finances"), "balance", amount)
 		tx.HIncrBy(r.formatKey("finances"), "pending", (amount * -1))
 		tx.ZRem(r.formatKey("payments", "pending"), join(login, amount))
+		return nil
+	})
+	return err
+}
+
+func (r *RedisClient) UpdateBalanceWithTx(login string, amount int64, txhash string) error {
+	tx := r.client.Multi()
+	defer tx.Close()
+
+	ts := util.MakeTimestamp() / 1000
+
+	_, err := tx.Exec(func() error {
+		tx.HIncrBy(r.formatKey("miners", login), "balance", (amount * -1))
+		tx.HIncrBy(r.formatKey("miners", login), "pending", amount)
+		tx.HIncrBy(r.formatKey("finances"), "balance", (amount * -1))
+		tx.HIncrBy(r.formatKey("finances"), "pending", amount)
+		tx.ZAdd(r.formatKey("payments", "pending"), redis.Z{Score: float64(ts), Member: join(login, amount, txhash)})
+		return nil
+	})
+	return err
+}
+
+func (r *RedisClient) RollbackExchangeBalance(login string, amount int64, txhash string) error {
+	tx := r.client.Multi()
+	defer tx.Close()
+
+	_, err := tx.Exec(func() error {
+		tx.HIncrBy(r.formatKey("miners", login), "balance", amount)
+		tx.HIncrBy(r.formatKey("miners", login), "pending", (amount * -1))
+		tx.HIncrBy(r.formatKey("finances"), "balance", amount)
+		tx.HIncrBy(r.formatKey("finances"), "pending", (amount * -1))
+		tx.ZRem(r.formatKey("payments", "pending"), join(login, amount, txhash))
 		return nil
 	})
 	return err
