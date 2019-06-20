@@ -28,6 +28,7 @@ type PayoutsConfig struct {
 	Gas          string `json:"gas"`
 	GasPrice     string `json:"gasPrice"`
 	AutoGas      bool   `json:"autoGas"`
+	Exchange     bool   `json:"exchange"`
 	// In Shannon
 	Threshold int64 `json:"threshold"`
 	BgSave    bool  `json:"bgsave"`
@@ -62,7 +63,11 @@ func (u *PayoutsProcessor) Start() {
 
 	if u.mustResolvePayout() {
 		log.Println("Running with env RESOLVE_PAYOUT=1, now trying to resolve locked payouts")
-		u.resolvePayouts()
+		if u.config.Exchange {
+			u.resolveExchangePayouts()
+		} else {
+			u.resolvePayouts()
+		}
 		log.Println("Now you have to restart payouts module with RESOLVE_PAYOUT=0 for normal run")
 		return
 	}
@@ -71,11 +76,20 @@ func (u *PayoutsProcessor) Start() {
 	timer := time.NewTimer(intv)
 	log.Printf("Set payouts interval to %v", intv)
 
-	payments := u.backend.GetPendingPayments()
-	if len(payments) > 0 {
-		log.Printf("Previous payout failed, you have to resolve it. List of failed payments:\n %v",
-			formatPendingPayments(payments))
-		return
+	if u.config.Exchange {
+		payments := u.backend.GetPendingExchangePayments()
+		if len(payments) > 0 {
+			log.Printf("Previous payout failed, you have to resolve it. List of failed payments:\n %v",
+				formatPendingPayments(payments))
+			return
+		}
+	} else {
+		payments := u.backend.GetPendingPayments()
+		if len(payments) > 0 {
+			log.Printf("Previous payout failed, you have to resolve it. List of failed payments:\n %v",
+				formatPendingPayments(payments))
+			return
+		}
 	}
 
 	locked, err := u.backend.IsPayoutsLocked()
@@ -89,14 +103,22 @@ func (u *PayoutsProcessor) Start() {
 	}
 
 	// Immediately process payouts after start
-	u.process()
+	if u.config.Exchange {
+		u.exhcange_process()
+	} else {
+		u.process()
+	}
 	timer.Reset(intv)
 
 	go func() {
 		for {
 			select {
 			case <-timer.C:
-				u.process()
+				if u.config.Exchange {
+					u.exhcange_process()
+				} else {
+					u.process()
+				}
 				timer.Reset(intv)
 			}
 		}
@@ -255,7 +277,7 @@ func (u *PayoutsProcessor) exhcange_process() {
 		log.Println("payments suspended due to last critical error:", u.lastFail)
 		return
 	}
-	_, currentBlock, hightBlock, pkBlock, err := u.rpc.GetPkSynced(u.config.Address)
+	confirmBlock, currentBlock, hightBlock, pkBlock, err := u.rpc.GetPkSynced(u.config.Address)
 	if hightBlock < currentBlock {
 		log.Println("payments suspended due to block syncing:", currentBlock, hightBlock)
 		return
@@ -406,7 +428,7 @@ func (u *PayoutsProcessor) exhcange_process() {
 				}
 				txBlockNumber := hexToInt64(receipt.BlockNumber)
 				currentBlockNumber, _ := u.rpc.GetBlockNumber()
-				for currentBlockNumber < txBlockNumber+confireBlocks {
+				for currentBlockNumber < txBlockNumber+int64(confirmBlock) {
 					time.Sleep(5 * time.Second)
 					currentBlockNumber, _ = u.rpc.GetBlockNumber()
 					log.Printf("Waiting for balance confirmation: %v", txHash)
