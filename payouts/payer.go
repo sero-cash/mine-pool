@@ -365,8 +365,8 @@ func (u *PayoutsProcessor) exhcange_process() {
 		if err != nil {
 			log.Printf("Failed to lock payment for %v: %v", payingLogins, err)
 			u.rpc.ClearExchange(u.config.Address)
-			//u.halt = true
-			//u.lastFail = err
+			u.halt = true
+			u.lastFail = err
 			return
 		}
 		log.Printf("Locked payment for %s, %v Shannon", payingLogins, payingShannonAmount)
@@ -377,9 +377,9 @@ func (u *PayoutsProcessor) exhcange_process() {
 			if err != nil {
 				log.Printf("Failed to UpdateBalanceWithTx for %s, %v Shannon, tx: %s: %v", a, ammountInshannon, txHash, err)
 				u.rpc.ClearExchange(u.config.Address)
-				u.resolveExchangePayouts()
-				//u.halt = true
-				//u.lastFail = err
+				//u.resolveExchangePayouts()
+				u.halt = true
+				u.lastFail = err
 				return
 			}
 		}
@@ -441,10 +441,8 @@ func (u *PayoutsProcessor) exhcange_process() {
 		payingShannonAmount = 0
 		poolAvailableBalance, err = u.rpc.GetMaxAvailable(u.config.Address)
 		if err != nil {
-			u.halt = true
-			u.lastFail = err
 			log.Printf("get poolAvailableBalance err:%v ", err)
-			return
+			continue
 		}
 	}
 	if mustPay > 0 {
