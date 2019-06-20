@@ -301,7 +301,6 @@ func (u *PayoutsProcessor) exhcange_process() {
 			return
 		}
 		amountInShannon := big.NewInt(amount)
-		totalAmount = new(big.Int).Add(totalAmount, amountInShannon)
 		// Shannon^2 = Wei
 		amountInWei := new(big.Int).Mul(amountInShannon, util.Shannon)
 
@@ -309,6 +308,7 @@ func (u *PayoutsProcessor) exhcange_process() {
 			log.Printf("%v ammount %d not reach threshold", login, amountInShannon)
 			continue
 		}
+		totalAmount = new(big.Int).Add(totalAmount, amountInShannon)
 		mustPayMiners = append(mustPayMiners, payInfo{login, amountInWei, amountInShannon.Int64()})
 
 	}
@@ -375,7 +375,7 @@ func (u *PayoutsProcessor) exhcange_process() {
 			ammountInshannon := new(big.Int).Div(a, util.Shannon).Int64()
 			err = u.backend.UpdateBalanceWithTx(p, ammountInshannon, txHash)
 			if err != nil {
-				log.Printf("Failed to UpdateBalanceWithTx for %s, %v Shannon, tx: %s: %v", a, ammountInshannon, txHash, err)
+				log.Printf("Failed to UpdateBalanceWithTx for %s, %v Shannon, tx: %s: %v", p, ammountInshannon, txHash, err)
 				u.rpc.ClearExchange(u.config.Address)
 				//u.resolveExchangePayouts()
 				u.halt = true
@@ -396,12 +396,12 @@ func (u *PayoutsProcessor) exhcange_process() {
 			ammountInshannon := new(big.Int).Div(a, util.Shannon).Int64()
 			err = u.backend.WriteExchangePayment(p, txHash, ammountInshannon)
 			if err != nil {
-				log.Printf("Failed to log payment data for %s, %v Shannon, tx: %s: %v", a, ammountInshannon, txHash, err)
+				log.Printf("Failed to log payment data for %s, %v Shannon, tx: %s: %v", p, ammountInshannon, txHash, err)
 				u.halt = true
 				u.lastFail = err
 				return
 			}
-			log.Printf("Paid %v Shannon to %v, TxHash: %v", a, p, txHash)
+			log.Printf("Paid %v Shannon to %v with TxHash: %v", ammountInshannon, p, txHash)
 		}
 
 		err = u.backend.UnlockPayouts()
@@ -431,12 +431,12 @@ func (u *PayoutsProcessor) exhcange_process() {
 				for currentBlockNumber < txBlockNumber+int64(confirmBlock) {
 					time.Sleep(5 * time.Second)
 					currentBlockNumber, _ = u.rpc.GetBlockNumber()
-					log.Printf("Waiting for balance confirmation: %v", txHash)
+					log.Printf("Waiting for balance confirmation: %v,currentBlock:%v,txBlokc:%v", txHash, currentBlock, txBlockNumber)
 				}
 				break
 			}
 		}
-		log.Printf("Paid total %v Shannon to %v of %v payees", payingShannonAmount, len(payingLogins), mustPay)
+		log.Printf("batch Paid total %v Shannon to %v of %v payees", payingShannonAmount, len(payingLogins), mustPay)
 		payingLogins = map[string]*big.Int{}
 		payingShannonAmount = 0
 		poolAvailableBalance, err = u.rpc.GetMaxAvailable(u.config.Address)
