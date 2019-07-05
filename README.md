@@ -281,6 +281,8 @@ otherwise you will get errors on start because of JSON comments.**
     "gasPrice": "10000000000",
     // Send payment only if miner's balance is >= 0.5 Ether
     "threshold": 500000000,
+    // if true batch payments
+    "exchange":false,
     // Perform BGSAVE on Redis after successful payouts session
     "bgsave": false
   }
@@ -295,6 +297,11 @@ I recommend this deployment strategy:
 * Mining instance - 1x (it depends, you can run one node for EU, one for US, one for Asia)
 * Unlocker and payouts instance - 1x each (strict!)
 * API instance - 1x
+
+gero deployment strategy:
+
+*Mining instance -2x (main and backup)
+*Unlocker and payouts instanch -1x (when you start gero instance you must add `--exchange  --rpcapi net,sero,exchange `)
 
 ### Notes
 
