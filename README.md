@@ -300,8 +300,8 @@ I recommend this deployment strategy:
 
 gero deployment strategy:
 
-*Mining instance -2x (main and backup)
-*Unlocker and payouts instanch -1x (when you start gero instance you must add `--exchange  --rpcapi net,sero,exchange `)
+* Mining instance -2x (main and backup)
+* Unlocker and payouts instanch -1x (when you start gero instance you must add `--exchange  --rpcapi net,sero,exchange `)
 
 ### Notes
 
