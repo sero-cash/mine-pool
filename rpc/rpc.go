@@ -376,28 +376,19 @@ func (r *RPCClient) GetPkSynced(from string) (uint64, uint64, uint64, uint64, er
 	if err != nil {
 		return 0, 0, 0, 0, err
 	}
-	result := map[string]interface{}{}
+	result := pkSynced{}
 	err = json.Unmarshal(*rpcResp.Result, &result)
 	if err != nil {
 		return 0, 0, 0, 0, err
 	}
+	return result.ConfirmedBlock, result.CurrentBlock, result.HighestBlock, result.CurrentPKBlock, nil
+}
 
-	var confirmBlock, currentBlock, hightBlock, pkBlock uint64
-	for k, v := range result {
-		if k == "confirmedBlock" {
-			confirmBlock = v.(uint64)
-		}
-		if k == "currentBlock" {
-			currentBlock = v.(uint64)
-		}
-		if k == "highestBlock" {
-			hightBlock = v.(uint64)
-		}
-		if k == "currentPKBlock" {
-			pkBlock = v.(uint64)
-		}
-	}
-	return confirmBlock, currentBlock, hightBlock, pkBlock, nil
+type pkSynced struct {
+	ConfirmedBlock uint64 `json:"confirmedBlock"`
+	CurrentBlock   uint64 `json:"currentBlock"`
+	HighestBlock   uint64 `json:"highestBlock"`
+	CurrentPKBlock uint64 `json:"currentPKBlock"`
 }
 
 func (r *RPCClient) CanTx(from string, lastTxBlock uint64) (bool, error) {
