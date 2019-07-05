@@ -258,7 +258,7 @@ func (r *RPCClient) SendTransaction(from, to, gas, gasPrice, value string, autoG
 type ReceptionArgs struct {
 	Addr     string
 	Currency string
-	Value    uint64
+	Value    *big.Int
 }
 
 type GenTxArgs struct {
@@ -308,7 +308,7 @@ func (r *RPCClient) GenTxWithSign(from string, gas uint64, gasPrice uint64, pays
 		receptions = append(receptions, ReceptionArgs{
 			Addr:     base58ToHex(k),
 			Currency: "SERO",
-			Value:    v.Uint64(),
+			Value:    v,
 		})
 	}
 	args := GenTxArgs{
@@ -344,7 +344,7 @@ func (r *RPCClient) SendExchangeTransactions(from string, gas uint64, gasPrice u
 		receptions = append(receptions, ReceptionArgs{
 			Addr:     base58ToHex(k),
 			Currency: "SERO",
-			Value:    v.Uint64(),
+			Value:    v,
 		})
 	}
 	args := GenTxArgs{
