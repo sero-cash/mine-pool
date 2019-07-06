@@ -508,7 +508,7 @@ func (r *RedisClient) WriteExchangePayment(login, txHash string, amount int64) e
 		tx.HIncrBy(r.formatKey("finances"), "paid", amount)
 		tx.ZAdd(r.formatKey("payments", "all"), redis.Z{Score: float64(ts), Member: join(txHash, login, amount)})
 		tx.ZAdd(r.formatKey("payments", login), redis.Z{Score: float64(ts), Member: join(txHash, amount)})
-		tx.ZRem(r.formatKey("payments", "pending"), join(login, amount))
+		tx.ZRem(r.formatKey("payments", "pending"), join(login, amount, txHash))
 		return nil
 	})
 	return err
