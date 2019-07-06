@@ -391,51 +391,6 @@ type pkSynced struct {
 	CurrentPKBlock uint64 `json:"currentPKBlock"`
 }
 
-func (r *RPCClient) CanTx(from string, lastTxBlock uint64) (bool, error) {
-	fromAddress := base58ToHex(from)
-	rpcResp, err := r.doPost(r.Url, "exchange_getPkSynced", []interface{}{fromAddress})
-	if err != nil {
-		return false, err
-	}
-	result := map[string]interface{}{}
-	err = json.Unmarshal(*rpcResp.Result, &result)
-	if err != nil {
-		return false, err
-	}
-
-	var confirmBlock, currentBlock, hightBlock, pkBlock uint64
-	for k, v := range result {
-		if k == "confirmedBlock" {
-			confirmBlock = v.(uint64)
-		}
-		if k == "currentBlock" {
-			currentBlock = v.(uint64)
-		}
-		if k == "highestBlock" {
-			hightBlock = v.(uint64)
-		}
-		if k == "currentPKBlock" {
-			pkBlock = v.(uint64)
-		}
-	}
-	if currentBlock == hightBlock && confirmBlock+pkBlock+128 >= currentBlock {
-		if currentBlock > lastTxBlock+confirmBlock {
-			if pkBlock > lastTxBlock {
-				return true, nil
-			} else {
-				return false, errors.New("Account balance is confirming")
-			}
-
-		} else {
-			return false, errors.New("Account is confirming")
-		}
-
-	} else {
-		return false, errors.New("Account is syncing")
-	}
-
-}
-
 func (r *RPCClient) doPost(url string, method string, params interface{}) (*JSONRpcResp, error) {
 	jsonReq := map[string]interface{}{"jsonrpc": "2.0", "method": method, "params": params, "id": 0}
 	data, _ := json.Marshal(jsonReq)

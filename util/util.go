@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/btcsuite/btcutil/base58"
+
 	"github.com/sero-cash/go-czero-import/keys"
 
 	"github.com/sero-cash/go-sero/common"
@@ -20,19 +22,32 @@ var pow256 = math.BigPow(2, 256)
 var zeroHash = regexp.MustCompile("^0?x?0+$")
 
 func IsValidBase58Address(s string) bool {
-	//fmt.Println(s)
-	address := common.Base58ToAddress(s)
-	flag, err := common.IsPkr(&address)
-	if err != nil {
-		//fmt.Println(s + ":0")
+
+	out := base58.Decode(s)
+	if len(out) == 96 {
+		pkr := keys.PKr{}
+		copy(pkr[:], out[:])
+		if keys.PKrValid(&pkr) {
+			return true
+		} else {
+			fmt.Printf("invalid address %v,length is %v", s, len(out))
+			return false
+		}
+	} else if len(out) == 64 {
+		pk := keys.Uint512{}
+		copy(pk[:], out[:])
+		if keys.IsPKValid(&pk) {
+			return true
+		} else {
+			fmt.Printf("invalid address %v,length is %v", s, len(out))
+			return false
+
+		}
+	} else {
+		fmt.Printf("invalid address %v,length is %v", s, len(out))
 		return false
 	}
-	if !flag {
-		//fmt.Println(s + ":1")
-		return keys.IsPKValid(address.ToUint512())
-	}
-	//fmt.Println(s + ":2")
-	return true
+
 }
 
 func IsZeroHash(s string) bool {

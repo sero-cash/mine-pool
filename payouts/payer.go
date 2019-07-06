@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/btcsuite/btcutil/base58"
+
 	"github.com/sero-cash/go-sero/common/hexutil"
 
 	"github.com/sero-cash/mine-pool/rpc"
@@ -295,6 +297,12 @@ func (u *PayoutsProcessor) exhcange_process() {
 	mustPayMiners := []payInfo{}
 	totalAmount := big.NewInt(0)
 	for _, login := range payees {
+		out := base58.Decode(login)
+		if len(out) != 64 && len(out) != 96 {
+			fmt.Printf("invalid address %v,length is %v", login, len(out))
+			continue
+		}
+
 		amount, err := u.backend.GetBalance(login)
 		if err != nil {
 			log.Printf("GetBalance login:%v err:%v ", login, err)
