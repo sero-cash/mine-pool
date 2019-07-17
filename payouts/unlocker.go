@@ -468,14 +468,16 @@ var (
 
 	lReward = new(big.Int).Mul(big.NewInt(176), base)
 	hReward = new(big.Int).Mul(big.NewInt(445), base)
+	hRewardv4 = new(big.Int).Mul(big.NewInt(356), base)
 
 	argA, _ = new(big.Int).SetString("985347985347985", 10)
 	argB, _ = new(big.Int).SetString("16910256410256400000", 10)
 )
 
 func getConstReward(Number, Difficulty *big.Int) *big.Int {
-
-	if Number.Cmp(big.NewInt(int64(seroparam.SIP3()))) >= 0 {
+	if Number.Cmp(big.NewInt(int64(seroparam.SIP4())))>=0{
+		return getConstRewardv4(Number, Difficulty)
+	}else if Number.Cmp(big.NewInt(int64(seroparam.SIP3()))) >= 0 {
 		return getConstRewardv3(Number, Difficulty)
 	} else {
 		return getConstRewardv2(Number, Difficulty)
@@ -522,3 +524,20 @@ func getConstRewardv3(Number, Difficulty *big.Int) *big.Int {
 
 	return reward
 }
+
+func getConstRewardv4(Number, Difficulty *big.Int) *big.Int {
+
+	diff := new(big.Int).Div(Difficulty, big.NewInt(1000000000))
+	reward := new(big.Int).Add(new(big.Int).Mul(argA, diff), argB)
+
+	if reward.Cmp(lReward) < 0 {
+		reward = new(big.Int).Set(lReward)
+	} else if reward.Cmp(hRewardv4) > 0 {
+		reward = new(big.Int).Set(hRewardv4)
+	}
+
+	i := new(big.Int).Add(new(big.Int).Div(new(big.Int).Sub(Number, halveNimber), interval), big1)
+	return reward.Div(reward, new(big.Int).Exp(big2, i, nil))
+}
+
+
