@@ -29,7 +29,7 @@
         <div style="display: block;"><i class="fa fa-tachometer"></i> 算力 (3小时): <span>{{format-hashrate model.hashrate}}</span></div>
       </div>
       <div class="col-md-4 stats">
-        <div style="display: block;"><i class="fa fa-tachometer"></i> 发现总块数: <span>{{format-number model.stats.blocksFound fallback='0'}}</span></div>
+        <div style="display: block;"><i class="fa fa-tachometer"></i> 发现总块数: <span>{{format-number blocksFound fallback='0'}}</span></div>
         <div style="display: block;"><i class="fa fa-paper-plane-o"></i> 总支付笔数: <span>{{format-number model.paymentsTotal}}</span></div>
         <div style="display: block;">
           <i class="fa fa-gears"></i> 本轮贡献值: <span>{{format-number roundPercent style='percent' maximumFractionDigits='6'}}</span><br/>

@@ -12,5 +12,15 @@ export default Ember.Controller.extend({
       }
       return percent;
     }
+  }),
+
+  blocksFound: Ember.computed('model', {
+    get() {
+      if (typeof this.get('model.stats.blocksFound') === 'undefined') {
+        return 0;
+      } else {
+        return this.get('model.stats.blocksFound');
+      }
+    }
   })
 });
