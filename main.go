@@ -12,7 +12,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/sero-cash/go-czero-import/cpt"
+	"github.com/sero-cash/go-czero-import/superzk"
 
 	"github.com/yvasiyarov/gorelic"
 
@@ -77,7 +77,7 @@ func readConfig(cfg *proxy.Config) {
 }
 
 func main() {
-	cpt.ZeroInit_NoCircuit()
+	superzk.ZeroInit_NoCircuit()
 
 	readConfig(&cfg)
 
