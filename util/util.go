@@ -7,9 +7,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/btcsuite/btcutil/base58"
+	"github.com/sero-cash/go-czero-import/superzk"
 
-	"github.com/sero-cash/go-czero-import/keys"
+	"github.com/sero-cash/go-czero-import/c_type"
+
+	"github.com/btcsuite/btcutil/base58"
 
 	"github.com/sero-cash/go-sero/common"
 	"github.com/sero-cash/go-sero/common/math"
@@ -25,18 +27,18 @@ func IsValidBase58Address(s string) bool {
 
 	out := base58.Decode(s)
 	if len(out) == 96 {
-		pkr := keys.PKr{}
+		pkr := c_type.PKr{}
 		copy(pkr[:], out[:])
-		if keys.PKrValid(&pkr) {
+		if superzk.IsPKrValid(&pkr) {
 			return true
 		} else {
 			fmt.Printf("invalid address %v,length is %v", s, len(out))
 			return false
 		}
 	} else if len(out) == 64 {
-		pk := keys.Uint512{}
+		pk := c_type.Uint512{}
 		copy(pk[:], out[:])
-		if keys.IsPKValid(&pk) {
+		if superzk.IsPKValid(&pk) {
 			return true
 		} else {
 			fmt.Printf("invalid address %v,length is %v", s, len(out))
