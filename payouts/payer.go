@@ -337,7 +337,7 @@ func (u *PayoutsProcessor) exhcange_process() {
 
 	for minersPaid < mustPay {
 		payminer := mustPayMiners[minersPaid]
-		if poolAvailableBalance.Cmp(payminer.amount) > 0 && len(payingLogins) < 9 {
+		if poolAvailableBalance.Cmp(payminer.amount) > 0 && len(payingLogins) < 8 {
 			payingLogins[payminer.miner] = payminer.amount
 			payingShannonAmount += payminer.amountInShannon
 			poolAvailableBalance = new(big.Int).Add(poolAvailableBalance, new(big.Int).Mul(payminer.amount, big.NewInt(-1)))
