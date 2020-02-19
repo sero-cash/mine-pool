@@ -393,7 +393,7 @@ func (u *PayoutsProcessor) exhcange_process() {
 		}
 		err = u.rpc.CommitTx(rawData, txHash)
 		if err != nil {
-			log.Printf("Failed to CommitTx %v :", txHash, err)
+			log.Printf("Failed to CommitTx %v :%v", txHash, err)
 			u.halt = true
 			u.rpc.ClearExchange(u.config.Address)
 			u.lastFail = err

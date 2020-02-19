@@ -1,6 +1,7 @@
 package payouts
 
 import (
+	"fmt"
 	"math/big"
 	"os"
 	"testing"
@@ -90,4 +91,9 @@ func TestMatchCandidate(t *testing.T) {
 	if !matchCandidate(block, immature) {
 		t.Error("Must match with hash")
 	}
+}
+
+func TestGetConstRewardv5(t *testing.T) {
+	r := getConstRewardv5(big.NewInt(3057600), big.NewInt(19999))
+	fmt.Print(r.Div(r, big.NewInt(100000000)))
 }
