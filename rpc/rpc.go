@@ -279,18 +279,42 @@ func base58ToHex(bs string) string {
 
 }
 
+func isString(input []byte) bool {
+	return len(input) >= 2 && input[0] == '"' && input[len(input)-1] == '"'
+}
+
+type Big big.Int
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (b *Big) UnmarshalJSON(input []byte) error {
+	if isString(input) {
+		input = input[1 : len(input)-1]
+	}
+	i := big.Int{}
+	if e := i.UnmarshalText(input); e != nil {
+		return e
+	} else {
+		*b = Big(i)
+		return nil
+	}
+}
+
+func (b *Big) ToInt() *big.Int {
+	return (*big.Int)(b)
+}
+
 func (r *RPCClient) GetMaxAvailable(address string) (*big.Int, error) {
 	hexAddress := base58ToHex(address)
 	rpcResp, err := r.doPost(r.Url, "exchange_getMaxAvailable", []string{hexAddress, "SERO"})
 	if err != nil {
 		return nil, err
 	}
-	var reply *big.Int
+	var reply *Big
 	err = json.Unmarshal(*rpcResp.Result, &reply)
 	if err != nil {
 		return nil, err
 	}
-	return reply, err
+	return reply.ToInt(), err
 }
 
 func (r *RPCClient) ClearExchange(addres string) error {
