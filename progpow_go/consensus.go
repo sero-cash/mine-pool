@@ -51,12 +51,14 @@ func (ethash *Ethash) Verify(block Block) bool {
 	var digest []byte
 	var result []byte
 	if number >= seroparam.SIP3() {
-		dataset := ethash.dataset_async(number)
-		if dataset.generated() {
-			digest, result = progpowFull(dataset.dataset, block.HashNoNonce().Bytes(), block.Nonce(), number)
-		} else {
-			digest, result = progpowLightWithoutCDag(size, cache.cache, block.HashNoNonce().Bytes(), block.Nonce(), number)
-		}
+		digest, result = progpowLightWithoutCDag(size, cache.cache, block.HashNoNonce().Bytes(), block.Nonce(), number)
+
+		//dataset := ethash.dataset_async(number)
+		//if dataset.generated() {
+		//	digest, result = progpowFull(dataset.dataset, block.HashNoNonce().Bytes(), block.Nonce(), number)
+		//} else {
+		//	digest, result = progpowLightWithoutCDag(size, cache.cache, block.HashNoNonce().Bytes(), block.Nonce(), number)
+		//}
 	} else {
 		digest, result = hashimotoLight(size, cache.cache, block.HashNoNonce().Bytes(), block.Nonce(), number)
 	}
